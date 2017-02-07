@@ -32,14 +32,4 @@ void loop() {
 
     /// Clear a line for easier readability
     Serial.println();
-
-    CircularBuffer<int> test(3);
-
-    test.push(1);
-    test.push(2);
-    test.push(3);
-    test.push(4);
-    test.push(5);
-
-    test.get();
 }
