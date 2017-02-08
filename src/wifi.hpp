@@ -3,21 +3,26 @@
 
 #include <ESP8266WiFi.h>
 #include "const.hpp"
+#include "helpers.hpp"
 
 void connectWiFi() {
+    digitalWrite(LED_PIN, LOW);
+
 #ifdef DEBUG
     Serial.print("Connecting to ");
-    Serial.print(SSID);
+    Serial.println(SSID);
 #endif
 
     WiFi.begin(SSID, PASSWORD);
-
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-#ifdef DEBUG
-        Serial.print(".");
-#endif
+    if (WiFi.waitForConnectResult() != WL_CONNECTED) {
+        blink();
+        blink();
+        blink();
+        Serial.println("Connection failed. Entering deep sleep mode...");
+        ESP.deepSleep(WIFI_RECON_INT * 1000, WAKE_NO_RFCAL);
     }
+
+    OTA();
 
 #ifdef DEBUG
     Serial.println();
@@ -25,11 +30,13 @@ void connectWiFi() {
     Serial.println(WiFi.localIP());
     Serial.println();
 #endif
+
+    digitalWrite(LED_PIN, HIGH);
 }
 
 void watchWiFi() {
     if (WiFi.status() == WL_CONNECTED) {
-        WiFi.softAPdisconnect(true);
+        WiFi.softAPdisconnect(true); // TODO: Check a GPIO Pin to be HIGH in order to do this (preserving power in everyday use)
     } else {
         WiFi.softAP("FIND Tracker", "12345678");
         // TODO: Launch configuration server (and create something to configurate..)
