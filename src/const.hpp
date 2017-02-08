@@ -6,6 +6,7 @@
 #define BUFFER_SIZE     10
 
 #define WIFI_RECON_INT  60000
+#define HOTSPOT_PIN     0           // Corresponds to D3 on the ESP12E DevKit v2
 
 #define FIND_SERVER_URL "http://10.0.0.38:18003/track"
 #define FIND_GROUP      "Family"

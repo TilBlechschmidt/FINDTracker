@@ -35,13 +35,14 @@ void connectWiFi() {
 }
 
 void watchWiFi() {
-    if (WiFi.status() == WL_CONNECTED) {
-        WiFi.softAPdisconnect(true); // TODO: Check a GPIO Pin to be HIGH in order to do this (preserving power in everyday use)
-    } else {
-        WiFi.softAP("FIND Tracker", "12345678");
-        // TODO: Launch configuration server (and create something to configurate..)
+    // Enable the hotspot if the pin is grounded
+    if (digitalRead(HOTSPOT_PIN))
+        WiFi.softAPdisconnect(true);
+    else
+        WiFi.softAP("FIND Tracker", "12345678"); // TODO: When this is actived once HTTP Post fails w/ conn refused
+
+    if (!WiFi.isConnected())
         connectWiFi();
-    }
 }
 
 #endif

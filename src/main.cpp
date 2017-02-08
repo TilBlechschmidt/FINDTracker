@@ -6,6 +6,8 @@
 #include "helpers.hpp"
 #include "tracking.hpp"
 
+TrackingData data(BUFFER_SIZE);
+
 void setup () {
     /// Set up the built-in LED and turn it on to let the user know the ESP is working
     pinMode(LED_PIN, OUTPUT);
@@ -15,24 +17,21 @@ void setup () {
     Serial.begin(115200);
     Serial.println();
 
-    /// Set the ESP up for both client and station mode
-    WiFi.mode(WIFI_AP_STA); //TODO: Just enter WIFI_STA when the network is configured to save power
+    /// Set the ESP up for both client and station mode (aparently required for scanning)
+    WiFi.mode(WIFI_AP_STA);
 }
-
-TrackingData data;
 
 void loop() {
     /// Keep the WiFi connection online or open a configuration hotspot
     watchWiFi();
 
-Serial.println("Updating data");
     /// Scan for networks and send the data to the FIND Server
     data.update();
-Serial.println("Sending data");
     bool successful = data.send();
 
     /// Blink to indicate that we have sent our location
-    if (successful) blink();
+    if (successful)
+        blink();
 
     ArduinoOTA.handle();
 
