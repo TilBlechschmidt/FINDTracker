@@ -19,17 +19,16 @@ void setup () {
     WiFi.mode(WIFI_AP_STA);
 }
 
+TrackingData data;
+
 void loop() {
     /// Keep the WiFi connection online or open a configuration hotspot
     watchWiFi();
 
     /// Scan for networks and send the data to the FIND Server
-    String trackingData = collectTrackingData();
-    bool successful = sendTrackingData(trackingData);
+    data.update();
+    bool successful = data.send();
 
     /// Blink to indicate that we have sent our location
     if (successful) blink();
-
-    /// Clear a line for easier readability
-    Serial.println();
 }

@@ -3,6 +3,7 @@
 
 /// -- Things you are supposed to change --
 #define DEBUG           true
+#define BUFFER_SIZE     10
 
 #define FIND_SERVER_URL "http://10.0.0.38:18003/track"
 #define FIND_GROUP      "Family"
