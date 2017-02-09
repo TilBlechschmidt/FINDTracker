@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef FIND_HELPERS_H
+#define FIND_HELPERS_H
 
 #include <Arduino.h>
 #include <ArduinoOTA.h>
@@ -7,7 +7,7 @@
 #include <vector>
 #include <Ticker.h>
 
-#include "const.hpp"
+#include "defaults.hpp"
 
 void blink() {
     digitalWrite(LED_PIN, LOW);
@@ -110,7 +110,7 @@ public:
         return elements;
     }
 
-    CircularBuffer(int size) {
+    CircularBuffer(int size) : buffer(size) {
         this->size = size;
         this->buffer.reserve(size);
         this->pushCount = 0;

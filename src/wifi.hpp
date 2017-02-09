@@ -2,7 +2,7 @@
 #define WIFI_H
 
 #include <ESP8266WiFi.h>
-#include "const.hpp"
+#include "defaults.hpp"
 #include "helpers.hpp"
 
 void connectWiFi() {
@@ -10,16 +10,17 @@ void connectWiFi() {
 
 #ifdef DEBUG
     Serial.print("Connecting to ");
-    Serial.println(SSID);
+    Serial.println(DEFAULT_SSID);
 #endif
 
-    WiFi.begin(SSID, PASSWORD);
+    WiFi.begin(DEFAULT_SSID, DEFAULT_PASSWORD);
     if (WiFi.waitForConnectResult() != WL_CONNECTED) {
-        blink();
+        // blink();
         blink();
         blink();
         Serial.println("Connection failed. Entering deep sleep mode...");
-        ESP.deepSleep(WIFI_RECON_INT * 1000, WAKE_NO_RFCAL);
+        return;
+        // ESP.deepSleep(WIFI_RECON_INT * 1000, WAKE_NO_RFCAL);
     }
 
     OTA();
