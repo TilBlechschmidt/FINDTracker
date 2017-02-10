@@ -8,23 +8,11 @@
 #include "defaults.hpp"
 
 struct ConfigData {
-    ConfigData() : data(dataBuffer.createObject()) {}
-    ConfigData(JsonObject d) : data(d) {}
+    ConfigData() {
+        this->data = &dataBuffer.createObject();
+    }
     DynamicJsonBuffer dataBuffer;
-    JsonObject& data;
-    // // Wireless related settings
-    // uint16_t wifiReconnectionInterval;
-    // String SSID;
-    // String passphrase;
-    //
-    // // Tracking related settings
-    // bool active;
-    // uint16_t bufferSize;
-    //
-    // // Tracking server related settings
-    // String trackingURL;
-    // String trackingGroup;
-    // String trackingUser;
+    JsonObject* data;
 };
 
 class Config {
@@ -37,6 +25,11 @@ public:
 
     void read(int address);
     void write(int EEPROMAdress);
+
+    template<typename T>
+    T get(String key) {
+        return (*(this->data.data))[key];
+    }
 };
 
 #endif // CONFIG_H

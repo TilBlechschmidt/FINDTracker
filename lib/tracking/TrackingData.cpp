@@ -1,7 +1,7 @@
 #include "TrackingData.hpp"
 
 void TrackingData::update() {
-    /// Initiate a scan for networks
+    /// Initiate a scan for networks TODO: Run async
     int networkCount = WiFi.scanNetworks(false, true);
 
     // Create a list of fingerprints
