@@ -43,10 +43,8 @@ String TrackingData::assemble() {
     JsonObject& root = jsonBuffer.createObject();
 
     /// Set the metadata
-    // root["group"] = this->config->get<String>("trackingGroup");
-    // root["username"] = this->config->get<String>("trackingUser");
-    root["group"] = DEFAULT_TRACKING_GROUP;
-    root["username"] = DEFAULT_TRACKING_USER;
+    root["group"] = this->config->get<String>("trackingGroup");
+    root["username"] = this->config->get<String>("trackingUser");
 
     /// Create the array containing the fingerprints
     JsonArray& tdFingerprints = root.createNestedArray("wifi-fingerprint");
@@ -61,7 +59,6 @@ String TrackingData::assemble() {
     /// Iterate over fingerprintsHistory in reverse to keep the newest values
     for (unsigned timeDelta = BSSIDHistory.size(); timeDelta-- > 0; ) {
         /// Iterate over every fingerprint in each timeframe of the history
-        // for (Fingerprint fingerprint : fingerprintsHistory[i]) {
         for (unsigned int network = 0; network < BSSIDHistory[timeDelta].size(); ++network) {
             BSSID = BSSIDHistory[timeDelta][network];
             RSSI = RSSIHistory[timeDelta][network];
@@ -76,7 +73,6 @@ String TrackingData::assemble() {
                 fp["mac"] = BSSID;
                 fp["rssi"] = RSSI;
                 tdFingerprints.add(fp);
-                // tdFingerprints.add(fingerprint.toJSON());
 
                 /// Save the BSSID of the fingerprint to prevent duplicates
                 updatedBSSIDs.push_back(BSSID);
@@ -94,11 +90,12 @@ String TrackingData::assemble() {
 
 bool TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
-        // String server = this->config->get<String>("trackingURL");
-        String server = DEFAULT_TRACKING_URL;
+        String url = this->config->data["trackingURL"];
+        Serial.print("Tracking URL: ");
+        Serial.println(url); // TODO: This is empty
 
         HTTPClient http;
-        http.begin(server);
+        http.begin(this->config->get<String>("trackingURL"));
 
         http.addHeader("Content-Type", "application/json");
         http.addHeader("cache-control", "no-cache");

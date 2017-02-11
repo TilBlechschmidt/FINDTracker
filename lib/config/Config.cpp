@@ -1,17 +1,16 @@
 #include "Config.hpp"
 
-Config::Config() {
-    JsonObject* json = this->data.data;
-    (*json)["wifiReconnectionInterval"] = DEFAULT_WIFI_RECON_INT;
-    (*json)["SSID"] = DEFAULT_SSID;
-    (*json)["passphrase"] = DEFAULT_PASSPHRASE;
+Config::Config() : data(dataBuffer.createObject()) {
+    this->data["wifiReconnectionInterval"] = DEFAULT_WIFI_RECON_INT;
+    this->data["SSID"] = DEFAULT_SSID;
+    this->data["passphrase"] = DEFAULT_PASSPHRASE;
 
-    (*json)["active"] = DEFAULT_ACTIVE;
-    (*json)["bufferSize"] = DEFAULT_BUFFER_SIZE;
+    this->data["active"] = DEFAULT_ACTIVE;
+    this->data["bufferSize"] = DEFAULT_BUFFER_SIZE;
 
-    (*json)["trackingURL"] = DEFAULT_TRACKING_URL;
-    (*json)["trackingGroup"] = DEFAULT_TRACKING_GROUP;
-    (*json)["trackingUser"] = DEFAULT_TRACKING_USER;
+    this->data["trackingURL"] = DEFAULT_TRACKING_URL;
+    this->data["trackingGroup"] = DEFAULT_TRACKING_GROUP;
+    this->data["trackingUser"] = DEFAULT_TRACKING_USER;
 }
 
 void Config::read(int address) {
@@ -23,25 +22,23 @@ void Config::read(int address) {
         json += currentChar;
     }
 
-    Serial.println(json);
+    DynamicJsonBuffer buf;
+    JsonObject& parsed = buf.parseObject(json);
 
-    ConfigData newConfig;
-    JsonObject* dat = &newConfig.dataBuffer.parseObject(json);
+    for(JsonObject::iterator it=parsed.begin(); it!=parsed.end(); ++it)
+        this->data[it->key] = it->value;
 
-    newConfig.data = dat;
-    this->data = newConfig;
-    Serial.println("SSID: " + this->get<String>("SSID"));
+    this->data.prettyPrintTo(Serial);
+    Serial.println();
 }
 
 void Config::write(int addr) {
     String json;
-    (*(this->data.data)).printTo(json);
+    this->data.printTo(json);
     json += '\0';
 
     for(unsigned int i = 0; i < json.length(); i++)
         EEPROM.write(i, json.charAt(i));
 
     EEPROM.commit();
-    Serial.println(json);
-    // this->read(addr);
 }

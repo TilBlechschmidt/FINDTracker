@@ -7,17 +7,10 @@
 
 #include "defaults.hpp"
 
-struct ConfigData {
-    ConfigData() {
-        this->data = &dataBuffer.createObject();
-    }
-    DynamicJsonBuffer dataBuffer;
-    JsonObject* data;
-};
-
 class Config {
 public:
-    ConfigData data;
+    DynamicJsonBuffer dataBuffer;
+    JsonObject& data;
 
     Config();
 
@@ -28,7 +21,7 @@ public:
 
     template<typename T>
     T get(String key) {
-        return (*(this->data.data))[key];
+        return this->data[key];
     }
 };
 

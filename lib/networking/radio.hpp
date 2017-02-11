@@ -9,7 +9,9 @@ class Radio {
     Config* config;
 
 public:
-    Radio(Config* conf) : config(conf) {}
+    Radio(Config* conf) : config(conf) {
+        Serial.printf("Radio config pointer: %p\n", conf);
+    }
 
     void setup();
     bool connect();

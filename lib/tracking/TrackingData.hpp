@@ -17,7 +17,9 @@ class TrackingData {
     Config* config;
 
 public:
-    TrackingData(int bufSize, Config* conf) : BSSIDBuffer(bufSize), RSSIBuffer(bufSize), config(conf) {}
+    TrackingData(Config* conf, int bufSize) : config(conf), BSSIDBuffer(bufSize), RSSIBuffer(bufSize) {
+        Serial.printf("Tracking config pointer: %p\n", conf);
+    }
 
     void initiateScan();
     bool update();

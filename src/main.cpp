@@ -11,7 +11,7 @@
 
 Config conf;
 Radio rf(&conf);
-TrackingData data(10, &conf);
+TrackingData data(&conf, 10);
 
 bool active = false;
 
@@ -30,6 +30,9 @@ void setup () {
 
     // Setup the OTA server
     OTA();
+
+    data = TrackingData(&conf, 10);
+    rf = Radio(&conf);
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
