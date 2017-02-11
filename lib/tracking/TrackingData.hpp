@@ -9,18 +9,19 @@
 
 #include "defaults.hpp"
 #include "helpers.hpp"
+#include "Config.hpp"
 
 class TrackingData {
     CircularBuffer<std::vector<String>> BSSIDBuffer;
     CircularBuffer<std::vector<int32_t>> RSSIBuffer;
+    Config* config;
 
 public:
-    TrackingData(int bufSize) : BSSIDBuffer(bufSize), RSSIBuffer(bufSize) {}
+    TrackingData(int bufSize, Config* conf) : BSSIDBuffer(bufSize), RSSIBuffer(bufSize), config(conf) {}
 
-    void update();
-
+    void initiateScan();
+    bool update();
     String assemble();
-
     bool send();
 };
 

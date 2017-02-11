@@ -2,19 +2,24 @@
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
 
-// #include "wifi.hpp"
+#include "helpers.hpp"
 #include "defaults.hpp"
 #include "radio.hpp"
 #include "Config.hpp"
-// #include "helpers.hpp"
 #include "TrackingData.hpp"
 
-TrackingData data(10);
 
 Config conf;
 Radio rf(&conf);
+TrackingData data(10, &conf);
+
+bool active = false;
 
 void setup () {
+
+    // Set up the EEPROM w/ a maximum size of 4096 bytes
+    EEPROM.begin(4096);
+
     /// Set up the built-in LED and turn it on to let the user know the ESP is working
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, HIGH);
@@ -23,10 +28,8 @@ void setup () {
     Serial.begin(115200);
     Serial.println();
 
-    // Setup the radios according to the configuration
-    rf.setup();
-
-    Serial.println(ESP.getChipId());
+    // Setup the OTA server
+    OTA();
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
@@ -36,9 +39,24 @@ void setup () {
         Serial.println("Saving default config to EEPROM");
         conf.write(0);
     }
+
+    // if (conf.get<bool>("active")) {
+    //     Serial.println("Active");
+    //     active = true;
+    // }
+
+    // Cache the active state
+    active = conf.get<bool>("active");
+
+    // Setup the radios according to the configuration
+    rf.setup();
+
 }
 
 void loop() {
+    // // TODO: Every conf.get call results in nothing
+    // Serial.println(conf.get<String>("SSID"));
+    // delay(1000);
 
     // Check for a WiFi connection and attempt to reestablish it if it died
     if (!rf.connected()) {
@@ -52,14 +70,17 @@ void loop() {
         digitalWrite(LED_PIN, HIGH);
     }
 
-    // -- PROBLEM CHILD -- (comment this in and it rains multiple definitions of ledStatus (helpers.hpp))
-    // /// Scan for networks and send the data to the FIND Server
-    // data.update();
-    // bool successful = data.send();
-    //
-    // /// Blink to indicate that we have sent our location
-    // if (successful)
-    //     blink();
+    if (active) { // TODO: This causes the segfault
+        /// Scan for networks and send the data to the FIND Server
+        if (data.update()) {
+            Serial.println("Updated data and sending");
+            bool successful = data.send();
+            //
+            // /// Blink to indicate that we have sent our location
+            // if (successful)
+            //     blink();
+        }
+    }
 
     ArduinoOTA.handle();
 

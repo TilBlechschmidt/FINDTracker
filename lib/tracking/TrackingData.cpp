@@ -1,15 +1,28 @@
 #include "TrackingData.hpp"
 
-void TrackingData::update() {
-    /// Initiate a scan for networks TODO: Run async
-    int networkCount = WiFi.scanNetworks(false, true);
+void TrackingData::initiateScan() {
+    WiFi.scanNetworks(true, true);
+}
+
+bool TrackingData::update() {
+    int status = WiFi.scanComplete();
+
+    if (status == WIFI_SCAN_RUNNING) return false;
+
+    if (status == -2) {  // No scan initiated previously
+        this->initiateScan();
+        return false;
+    }
+
+    /// If there was a previous scan and the scan is not running the status equals the number of networks discovered
+    // int networkCount = status;
 
     // Create a list of fingerprints
     std::vector<String> BSSIDs;
     std::vector<int32_t> RSSIs;
 
     /// Iterate over the networks and populate the list
-    for (int i = 0; i < networkCount; ++i) {
+    for (int i = 0; i < status; ++i) {
         BSSIDs.push_back(WiFi.BSSIDstr(i));
         RSSIs.push_back(WiFi.RSSI(i));
     }
@@ -17,6 +30,11 @@ void TrackingData::update() {
     /// Add the fingerprints to the circular buffer
     (this->BSSIDBuffer).push(BSSIDs);
     (this->RSSIBuffer).push(RSSIs);
+
+    // Initiate a new scan
+    this->initiateScan();
+
+    return true;
 }
 
 String TrackingData::assemble() {
@@ -25,8 +43,10 @@ String TrackingData::assemble() {
     JsonObject& root = jsonBuffer.createObject();
 
     /// Set the metadata
-    root["group"] = FIND_GROUP;
-    root["username"] = FIND_USER;
+    // root["group"] = this->config->get<String>("trackingGroup");
+    // root["username"] = this->config->get<String>("trackingUser");
+    root["group"] = DEFAULT_TRACKING_GROUP;
+    root["username"] = DEFAULT_TRACKING_USER;
 
     /// Create the array containing the fingerprints
     JsonArray& tdFingerprints = root.createNestedArray("wifi-fingerprint");
@@ -74,8 +94,11 @@ String TrackingData::assemble() {
 
 bool TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
+        // String server = this->config->get<String>("trackingURL");
+        String server = DEFAULT_TRACKING_URL;
+
         HTTPClient http;
-        http.begin(FIND_SERVER_URL);
+        http.begin(server);
 
         http.addHeader("Content-Type", "application/json");
         http.addHeader("cache-control", "no-cache");

@@ -11,9 +11,9 @@
 #define DEFAULT_PASSPHRASE      "4898536160015702"
 #define AP_PASSPHRASE           "12345678"
 
-#define DEFAULT_ACTIVE          false
+#define DEFAULT_ACTIVE          true
 #define DEFAULT_BUFFER_SIZE     10
-#define DEFAULT_TRACKING_URL    "http://10.0.0.38:18003/track2"
+#define DEFAULT_TRACKING_URL    "http://10.0.0.38:18003/track"
 #define DEFAULT_TRACKING_GROUP  "Family"
 #define DEFAULT_TRACKING_USER   "Til"
 

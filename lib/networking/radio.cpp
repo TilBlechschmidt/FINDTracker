@@ -32,9 +32,12 @@ void Radio::setup() {
 
     // Set up an AP for configuration if tracking is inactive (factory setting)
     if (!this->config->get<bool>("active")) {
+        Serial.println("Activating AccessPoint");
         char AP_SSID[25];
         sprintf(AP_SSID, "FIND Tracker %d", ESP.getChipId());
         WiFi.softAP(AP_SSID, AP_PASSPHRASE);
-    } else
-        WiFi.softAPdisconnect(false);
+    } else {
+        Serial.println("Disabling AP");
+        // WiFi.softAPdisconnect(true);
+    }
 }

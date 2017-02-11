@@ -1,8 +1,6 @@
 #include "Config.hpp"
 
 Config::Config() {
-    EEPROM.begin(4096);
-
     JsonObject* json = this->data.data;
     (*json)["wifiReconnectionInterval"] = DEFAULT_WIFI_RECON_INT;
     (*json)["SSID"] = DEFAULT_SSID;
@@ -25,11 +23,14 @@ void Config::read(int address) {
         json += currentChar;
     }
 
+    Serial.println(json);
+
     ConfigData newConfig;
     JsonObject* dat = &newConfig.dataBuffer.parseObject(json);
 
     newConfig.data = dat;
     this->data = newConfig;
+    Serial.println("SSID: " + this->get<String>("SSID"));
 }
 
 void Config::write(int addr) {
@@ -39,4 +40,8 @@ void Config::write(int addr) {
 
     for(unsigned int i = 0; i < json.length(); i++)
         EEPROM.write(i, json.charAt(i));
+
+    EEPROM.commit();
+    Serial.println(json);
+    // this->read(addr);
 }
