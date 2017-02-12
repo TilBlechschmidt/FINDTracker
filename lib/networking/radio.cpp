@@ -4,7 +4,7 @@ bool Radio::connect() {
     String hostname = this->config->get<String>("hostname");
     MDNS.begin(hostname.c_str());
     WiFi.hostname(hostname);
-    
+
     String SSID = this->config->get<String>("SSID");
     String passphrase = this->config->get<String>("passphrase");
 
@@ -34,11 +34,8 @@ void Radio::setup() {
     WiFi.mode(WIFI_AP_STA);
 
     // Set up an AP for configuration if tracking is inactive (factory setting)
-    if (!this->config->get<bool>("active")) {
-        char AP_SSID[25];
-        sprintf(AP_SSID, "FIND Tracker %d", ESP.getChipId());
-        WiFi.softAP(AP_SSID, AP_PASSPHRASE);
-    } else {
+    if (!this->config->get<bool>("active"))
+        WiFi.softAP(("FIND Tracker " + String(ESP.getChipId())).c_str(), AP_PASSPHRASE);
+    else
         WiFi.softAPdisconnect(true);
-    }
 }
