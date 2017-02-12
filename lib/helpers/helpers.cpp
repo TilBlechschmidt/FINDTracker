@@ -27,7 +27,7 @@ void OTA() {
     // ArduinoOTA.setHostname("myesp8266");
 
     // No authentication by default
-    // ArduinoOTA.setPassword("admin");
+    ArduinoOTA.setPassword("supersecret");
 
     // Password can be set with it's md5 value as well
     // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
@@ -42,7 +42,7 @@ void OTA() {
 
         // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
         Serial.println("Start updating " + type);
-        blinker.attach(0.05, blinkSync);
+        blinker.attach(0.1, blinkSync);
     });
     ArduinoOTA.onEnd([]() {
         blinker.detach();
