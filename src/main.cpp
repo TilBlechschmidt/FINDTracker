@@ -15,6 +15,31 @@ Radio rf(conf);
 TrackingData data(conf, 10);
 ConfigServer cfgSrv(80);
 
+// Test functions for remote debugging
+int vasprintf(char** strp, const char* fmt, va_list ap) {
+    va_list ap2;
+    va_copy(ap2, ap);
+    char tmp[1];
+    int size = vsnprintf(tmp, 1, fmt, ap2);
+    if (size <= 0) return size;
+    va_end(ap2);
+    size += 1;
+    *strp = (char*)malloc(size * sizeof(char));
+    return vsnprintf(*strp, size, fmt, ap);
+}
+
+void pline(char* str, ...) {
+	char* buf;
+	va_list args;
+
+	va_start(args, str);
+	vasprintf(&buf, str, args);
+	va_end(args);
+
+	Serial.println(buf);
+}
+// End of test functions
+
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
     EEPROM.begin(4096);
@@ -40,6 +65,8 @@ void setup () {
 
     // Setup the OTA server
     OTA();
+
+    pline("test %d", 10);
 }
 
 void runServerHandlers() {
