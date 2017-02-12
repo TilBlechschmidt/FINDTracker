@@ -29,10 +29,9 @@ void setup () {
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
-        Serial.println("Reading config from EEPROM");
         conf->read(0);
     } else {
-        Serial.println("Saving default config to EEPROM");
+        Serial.println("Restoring factory settings...");
         conf->write(0);
     }
 
@@ -63,7 +62,7 @@ void loop() {
         digitalWrite(LED_PIN, HIGH);
     }
 
-    // TODO: The data.update() step takes way too long
+    // TODO: The data.send() step takes way too long
     if (conf->get<bool>("active")) {
         /// Update the environment data (scan for networks)
         if (data.update()) {
@@ -71,14 +70,15 @@ void loop() {
             bool successful = data.send();
 
             /// Blink to indicate that we have sent our location
-            if (successful)
-                blink();
+            if (successful) blink();
         }
     }
 
     // Run all kinds of server handlers
     runServerHandlers();
 
-    // WiFi.setSleepMode(WIFI_MODEM_SLEEP);
-    // delay(10000);
+    // Enter a very basic sleep mode and limit the amount of cycles to preserve power
+    // (Turn off the radio and wake it up periodically to answer beacon signals from router)
+    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
+    delay(1000);
 }
