@@ -7,13 +7,13 @@
 #include "radio.hpp"
 #include "Config.hpp"
 #include "TrackingData.hpp"
+#include "ConfigServer.hpp"
 
 
 Config* conf = new Config();
 Radio rf(conf);
 TrackingData data(conf, 10);
-
-bool active = false;
+ConfigServer cfgSrv(80);
 
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
@@ -43,6 +43,11 @@ void setup () {
     OTA();
 }
 
+void runServerHandlers() {
+    ArduinoOTA.handle();
+    cfgSrv.handle();
+}
+
 int sleepTimeMS;
 void loop() {
     // Check for a WiFi connection and attempt to reestablish it if it died
@@ -58,6 +63,7 @@ void loop() {
         digitalWrite(LED_PIN, HIGH);
     }
 
+    // TODO: The data.update() step takes way too long
     if (conf->get<bool>("active")) {
         /// Update the environment data (scan for networks)
         if (data.update()) {
@@ -70,7 +76,8 @@ void loop() {
         }
     }
 
-    ArduinoOTA.handle();
+    // Run all kinds of server handlers
+    runServerHandlers();
 
     // WiFi.setSleepMode(WIFI_MODEM_SLEEP);
     // delay(10000);
