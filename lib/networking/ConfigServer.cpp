@@ -3,6 +3,8 @@
 ConfigServer::ConfigServer(int port) : httpServer(port) {
     ESP8266WebServer* srv = &this->httpServer;
     srv->on("/inline", [srv](){
+        if(!srv->authenticate("admin", "supersecret"))
+            return srv->requestAuthentication();
         srv->send(200, "text/plain", "this works as well");
     });
 
