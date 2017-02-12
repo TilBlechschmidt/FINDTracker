@@ -9,9 +9,9 @@
 #include "TrackingData.hpp"
 
 
-Config conf;
-Radio rf(&conf);
-TrackingData data(&conf, 10);
+Config* conf = new Config();
+Radio rf(conf);
+TrackingData data(conf, 10);
 
 bool active = false;
 
@@ -31,57 +31,47 @@ void setup () {
     // Setup the OTA server
     OTA();
 
-    data = TrackingData(&conf, 10);
-    rf = Radio(&conf);
+    data = TrackingData(conf, 10);
+    rf = Radio(conf);
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
         Serial.println("Reading config from EEPROM");
-        conf.read(0);
+        conf->read(0);
     } else {
         Serial.println("Saving default config to EEPROM");
-        conf.write(0);
+        conf->write(0);
     }
-
-    // if (conf.get<bool>("active")) {
-    //     Serial.println("Active");
-    //     active = true;
-    // }
-
-    // Cache the active state
-    active = conf.get<bool>("active");
 
     // Setup the radios according to the configuration
     rf.setup();
 
 }
 
+int sleepTimeMS;
 void loop() {
-    // // TODO: Every conf.get call results in nothing
-    // Serial.println(conf.get<String>("SSID"));
-    // delay(1000);
-
     // Check for a WiFi connection and attempt to reestablish it if it died
     if (!rf.connected()) {
         digitalWrite(LED_PIN, LOW);
         if (!rf.connect()) {
             // Enter deep sleep in case the connection failed
+            sleepTimeMS = conf->get<int>("wifiReconnectionInterval");
             blink(); blink(); blink();
-            Serial.println("Connection failed. Entering deep sleep mode...");
-            ESP.deepSleep(conf.get<int>("wifiReconnectionInterval") * 1000, WAKE_NO_RFCAL);
+            Serial.printf("Connection failed. Entering deep sleep mode for %dms ...\n", sleepTimeMS);
+            ESP.deepSleep(sleepTimeMS * 1000, WAKE_NO_RFCAL);
         }
         digitalWrite(LED_PIN, HIGH);
     }
 
-    if (active) { // TODO: This causes the segfault
-        /// Scan for networks and send the data to the FIND Server
+    if (conf->get<bool>("active")) {
+        /// Update the environment data (scan for networks)
         if (data.update()) {
-            Serial.println("Updated data and sending");
+            // Send the data to the FIND Server
             bool successful = data.send();
-            //
-            // /// Blink to indicate that we have sent our location
-            // if (successful)
-            //     blink();
+
+            /// Blink to indicate that we have sent our location
+            if (successful)
+                blink();
         }
     }
 

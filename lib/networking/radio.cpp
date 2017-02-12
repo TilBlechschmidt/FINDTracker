@@ -5,7 +5,7 @@ bool Radio::connect() {
     String passphrase = this->config->get<String>("passphrase");
 
 #ifdef DEBUG
-    Serial.print("Connecting to " + SSID + " ...");
+    Serial.println("Connecting to " + SSID + " ...");
 #endif
 
     WiFi.begin(SSID.c_str(), passphrase.c_str());
@@ -13,7 +13,6 @@ bool Radio::connect() {
         return false;
 
 #ifdef DEBUG
-    Serial.println();
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     Serial.println();
@@ -32,12 +31,10 @@ void Radio::setup() {
 
     // Set up an AP for configuration if tracking is inactive (factory setting)
     if (!this->config->get<bool>("active")) {
-        Serial.println("Activating AccessPoint");
         char AP_SSID[25];
         sprintf(AP_SSID, "FIND Tracker %d", ESP.getChipId());
         WiFi.softAP(AP_SSID, AP_PASSPHRASE);
     } else {
-        Serial.println("Disabling AP");
-        // WiFi.softAPdisconnect(true);
+        WiFi.softAPdisconnect(true);
     }
 }

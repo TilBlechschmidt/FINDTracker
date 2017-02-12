@@ -22,14 +22,11 @@ void Config::read(int address) {
         json += currentChar;
     }
 
-    DynamicJsonBuffer buf;
-    JsonObject& parsed = buf.parseObject(json);
+    String storedJson = this->dataBuffer.strdup(json);
+    JsonObject& parsed = this->dataBuffer.parseObject(storedJson);
 
     for(JsonObject::iterator it=parsed.begin(); it!=parsed.end(); ++it)
         this->data[it->key] = it->value;
-
-    this->data.prettyPrintTo(Serial);
-    Serial.println();
 }
 
 void Config::write(int addr) {

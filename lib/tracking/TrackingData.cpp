@@ -90,10 +90,6 @@ String TrackingData::assemble() {
 
 bool TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
-        String url = this->config->data["trackingURL"];
-        Serial.print("Tracking URL: ");
-        Serial.println(url); // TODO: This is empty
-
         HTTPClient http;
         http.begin(this->config->get<String>("trackingURL"));
 

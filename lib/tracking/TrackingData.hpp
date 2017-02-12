@@ -19,6 +19,8 @@ class TrackingData {
 public:
     TrackingData(Config* conf, int bufSize) : config(conf), BSSIDBuffer(bufSize), RSSIBuffer(bufSize) {
         Serial.printf("Tracking config pointer: %p\n", conf);
+        Serial.println("Value: " + conf->get<String>("trackingURL"));
+        Serial.println("Value2: " + this->config->get<String>("trackingURL"));
     }
 
     void initiateScan();
