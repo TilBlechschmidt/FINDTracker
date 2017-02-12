@@ -16,7 +16,6 @@ TrackingData data(conf, 10);
 bool active = false;
 
 void setup () {
-
     // Set up the EEPROM w/ a maximum size of 4096 bytes
     EEPROM.begin(4096);
 
@@ -27,12 +26,6 @@ void setup () {
     /// Open up the serial monitor
     Serial.begin(115200);
     Serial.println();
-
-    // Setup the OTA server
-    OTA();
-
-    data = TrackingData(conf, 10);
-    rf = Radio(conf);
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
@@ -46,6 +39,8 @@ void setup () {
     // Setup the radios according to the configuration
     rf.setup();
 
+    // Setup the OTA server
+    OTA();
 }
 
 int sleepTimeMS;

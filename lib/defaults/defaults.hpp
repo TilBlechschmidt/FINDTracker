@@ -7,6 +7,7 @@
 
 #define DEFAULT_WIFI_RECON_INT  60000
 
+#define DEFAULT_HOSTNAME        "FINDTracker"
 #define DEFAULT_SSID            "B at Home"
 #define DEFAULT_PASSPHRASE      "4898536160015702" // TODO: Put this into a non-git file ;)
 #define AP_PASSPHRASE           "12345678"

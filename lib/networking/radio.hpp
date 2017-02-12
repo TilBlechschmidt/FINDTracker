@@ -2,6 +2,7 @@
 #define NETWORKING_H
 
 #include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
 
 #include "Config.hpp"
 
@@ -9,9 +10,7 @@ class Radio {
     Config* config;
 
 public:
-    Radio(Config* conf) : config(conf) {
-        Serial.printf("Radio config pointer: %p\n", conf);
-    }
+    Radio(Config* conf) : config(conf) {}
 
     void setup();
     bool connect();

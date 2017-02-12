@@ -1,6 +1,10 @@
 #include "radio.hpp"
 
 bool Radio::connect() {
+    String hostname = this->config->get<String>("hostname");
+    MDNS.begin(hostname.c_str());
+    WiFi.hostname(hostname);
+    
     String SSID = this->config->get<String>("SSID");
     String passphrase = this->config->get<String>("passphrase");
 
@@ -15,7 +19,7 @@ bool Radio::connect() {
 #ifdef DEBUG
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
-    Serial.println();
+    Serial.println(" (" + this->config->get<String>("hostname") + ")");
 #endif
 
     return true;

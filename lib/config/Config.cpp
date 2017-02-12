@@ -4,6 +4,7 @@ Config::Config() : data(dataBuffer.createObject()) {
     this->data["wifiReconnectionInterval"] = DEFAULT_WIFI_RECON_INT;
     this->data["SSID"] = DEFAULT_SSID;
     this->data["passphrase"] = DEFAULT_PASSPHRASE;
+    this->data["hostname"] = DEFAULT_HOSTNAME;
 
     this->data["active"] = DEFAULT_ACTIVE;
     this->data["bufferSize"] = DEFAULT_BUFFER_SIZE;
