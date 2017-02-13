@@ -41,24 +41,117 @@ void OTA() {
             // type = "filesystem";
 
         // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
-        Serial.println("Start updating " + type);
+        Terminal::println("Start updating " + type);
         blinker.attach(0.1, blinkSync);
     });
     ArduinoOTA.onEnd([]() {
         blinker.detach();
-        Serial.println("\nEnd");
+        Terminal::println("\nEnd");
     });
     ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-        Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
+        Terminal::printf("Progress: %u%%\r", (progress / (total / 100)));
     });
     ArduinoOTA.onError([](ota_error_t error) {
         blinker.detach();
-        Serial.printf("Error[%u]: ", error);
-        if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-        else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-        else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-        else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-        else if (error == OTA_END_ERROR) Serial.println("End Failed");
+        Terminal::printf("Error[%u]: ", error);
+        if (error == OTA_AUTH_ERROR) Terminal::println("Auth Failed");
+        else if (error == OTA_BEGIN_ERROR) Terminal::println("Begin Failed");
+        else if (error == OTA_CONNECT_ERROR) Terminal::println("Connect Failed");
+        else if (error == OTA_RECEIVE_ERROR) Terminal::println("Receive Failed");
+        else if (error == OTA_END_ERROR) Terminal::println("End Failed");
     });
     ArduinoOTA.begin();
+}
+
+namespace Terminal {
+    WiFiServer server(23);
+    WiFiClient clients[MAX_SRV_CLIENTS];
+    uint8_t i;
+
+    void begin(int baudrate) {
+        Serial.begin(baudrate);
+        Serial.println();
+
+        server.begin();
+        server.setNoDelay(true);
+    }
+
+    void handle() {
+        // Check if there are any new clients
+        if (server.hasClient()) {
+            for(i = 0; i < MAX_SRV_CLIENTS; i++){
+                //find free/disconnected spot
+                if (!clients[i] || !clients[i].connected()) {
+                  if(clients[i]) clients[i].stop();
+                  clients[i] = server.available();
+                //   Serial.print("New client: "); Serial.print(i);
+                  continue;
+                }
+            }
+            //no free/disconnected spot so reject
+            WiFiClient serverClient = server.available();
+            serverClient.stop();
+        }
+    }
+
+    void print(char* str, int len) {
+        Serial.print(str);
+
+        //push UART data to all connected telnet clients
+        for (i = 0; i < MAX_SRV_CLIENTS; i++){
+            if (clients[i] && clients[i].connected()) {
+                clients[i].write((const uint8_t*) str, len);
+                delay(1);
+            }
+        }
+    }
+
+    void print(String str) {
+        Terminal::print((char*) str.c_str(), str.length());
+    }
+
+    void println(char* str, int len) {
+        strcat(str, "\n");
+        Terminal::print(str, len+1);
+    }
+
+    void println(String str) {
+        Terminal::println((char*) str.c_str(), str.length());
+    }
+
+    void printf(char* str, ...) {
+    	char* buf;
+        int len = 0;
+    	va_list args;
+
+    	va_start(args, str);
+    	vasprintf(&buf, str, args, &len);
+    	va_end(args);
+
+        Terminal::print(buf, len);
+    }
+
+    void printf(String str, ...) {
+        char* buf;
+        int len = 0;
+        va_list args;
+
+        va_start(args, str);
+        vasprintf(&buf, (char*) str.c_str(), args, &len);
+        va_end(args);
+
+        Terminal::print(buf, len);
+    }
+}
+
+int vasprintf(char** strp, const char* fmt, va_list ap, int* size) {
+    va_list ap2;
+    va_copy(ap2, ap);
+    char tmp[1];
+    *size = vsnprintf(tmp, 1, fmt, ap2);
+    if (*size <= 0) return *size;
+    va_end(ap2);
+    *size += 1;
+    *strp = (char*)malloc(*size * sizeof(char));
+    return vsnprintf(*strp, *size, fmt, ap);
 }

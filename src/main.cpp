@@ -16,28 +16,28 @@ TrackingData data(conf, 10);
 ConfigServer cfgSrv(80);
 
 // Test functions for remote debugging
-int vasprintf(char** strp, const char* fmt, va_list ap) {
-    va_list ap2;
-    va_copy(ap2, ap);
-    char tmp[1];
-    int size = vsnprintf(tmp, 1, fmt, ap2);
-    if (size <= 0) return size;
-    va_end(ap2);
-    size += 1;
-    *strp = (char*)malloc(size * sizeof(char));
-    return vsnprintf(*strp, size, fmt, ap);
-}
-
-void pline(char* str, ...) {
-	char* buf;
-	va_list args;
-
-	va_start(args, str);
-	vasprintf(&buf, str, args);
-	va_end(args);
-
-	Serial.println(buf);
-}
+// int vasprintf(char** strp, const char* fmt, va_list ap) {
+//     va_list ap2;
+//     va_copy(ap2, ap);
+//     char tmp[1];
+//     int size = vsnprintf(tmp, 1, fmt, ap2);
+//     if (size <= 0) return size;
+//     va_end(ap2);
+//     size += 1;
+//     *strp = (char*)malloc(size * sizeof(char));
+//     return vsnprintf(*strp, size, fmt, ap);
+// }
+//
+// void pline(char* str, ...) {
+// 	char* buf;
+// 	va_list args;
+//
+// 	va_start(args, str);
+// 	vasprintf(&buf, str, args);
+// 	va_end(args);
+//
+// 	Terminal::println(buf);
+// }
 // End of test functions
 
 void setup () {
@@ -48,15 +48,14 @@ void setup () {
     pinMode(LED_PIN, OUTPUT);
     digitalWrite(LED_PIN, HIGH);
 
-    /// Open up the serial monitor
-    Serial.begin(115200);
-    Serial.println();
+    /// Open up the serial and TCP monitor
+    Terminal::begin(115200);
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
         conf->read(0);
     } else {
-        Serial.println("Restoring factory settings...");
+        Terminal::println("Restoring factory settings...");
         conf->write(0);
     }
 
@@ -65,13 +64,12 @@ void setup () {
 
     // Setup the OTA server
     OTA();
-
-    pline("test %d", 10);
 }
 
 void runServerHandlers() {
     ArduinoOTA.handle();
     cfgSrv.handle();
+    Terminal::handle();
 }
 
 int sleepTimeMS;
@@ -83,7 +81,7 @@ void loop() {
             // Enter deep sleep in case the connection failed
             sleepTimeMS = conf->get<int>("wifiReconnectionInterval");
             blink(); blink(); blink();
-            Serial.printf("Connection failed. Entering deep sleep mode for %dms ...\n", sleepTimeMS);
+            Terminal::printf("Connection failed. Entering deep sleep mode for %dms ...\n", sleepTimeMS);
             ESP.deepSleep(sleepTimeMS * 1000, WAKE_NO_RFCAL);
         }
         digitalWrite(LED_PIN, HIGH);

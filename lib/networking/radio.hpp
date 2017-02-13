@@ -1,6 +1,8 @@
 #ifndef NETWORKING_H
 #define NETWORKING_H
 
+#include "helpers.hpp" // Needs to be up here because of some naming collision
+
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
 

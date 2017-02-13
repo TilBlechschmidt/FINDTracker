@@ -103,16 +103,16 @@ bool TrackingData::send() {
 
         if (httpCode >= 200 && httpCode < 300) {
 #ifdef DEBUG
-            Serial.println(payload);
+            Terminal::println(payload);
 #endif
             return true;
         } else {
-            Serial.printf("HTTP POST failed with code %d\n", httpCode);
-            Serial.println(http.errorToString(httpCode));
+            Terminal::printf("HTTP POST failed with code %d\n", httpCode);
+            Terminal::println(http.errorToString(httpCode));
         }
 
     } else {
-        Serial.println("Couldn't send request since there's no WiFi connection");
+        Terminal::println("Couldn't send request since there's no WiFi connection");
     }
 
     return false;

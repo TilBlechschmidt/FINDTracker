@@ -9,7 +9,7 @@ bool Radio::connect() {
     String passphrase = this->config->get<String>("passphrase");
 
 #ifdef DEBUG
-    Serial.println("Connecting to " + SSID + " ...");
+    Terminal::println("Connecting to " + SSID + " ...");
 #endif
 
     WiFi.begin(SSID.c_str(), passphrase.c_str());
@@ -17,9 +17,9 @@ bool Radio::connect() {
         return false;
 
 #ifdef DEBUG
-    Serial.print("IP address: ");
-    Serial.println(WiFi.localIP());
-    Serial.println(" (" + this->config->get<String>("hostname") + ")");
+    Terminal::print("IP address: ");
+    Terminal::println(WiFi.localIP().toString());
+    Terminal::println(" (" + this->config->get<String>("hostname") + ")");
 #endif
 
     return true;

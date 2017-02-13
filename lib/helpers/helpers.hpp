@@ -4,6 +4,9 @@
 #include <Arduino.h>
 #include <ArduinoOTA.h>
 #include <ESP8266mDNS.h>
+extern "C" {
+    #include <ESP8266WiFi.h>
+}
 #include <vector>
 #include <Ticker.h>
 
@@ -12,6 +15,24 @@
 void blink();
 void blinkSync();
 void OTA();
+
+int vasprintf(char** strp, const char* fmt, va_list ap, int* size);
+
+#define MAX_SRV_CLIENTS 1
+
+namespace Terminal {
+    void begin(int baudrate);
+    void handle();
+
+    void print(char* str, int len);
+    void print(String str);
+
+    void println(char* str, int len);
+    void println(String str);
+
+    void printf(char* str, ...);
+    void printf(String str, ...);
+};
 
 template<typename T>
 class CircularBuffer {
