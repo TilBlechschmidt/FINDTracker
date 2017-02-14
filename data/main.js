@@ -1,3 +1,14 @@
+function navigate(name) {
+    var navElements = document.querySelectorAll(".nav-item");
+    navElements.forEach(function (el) {
+        if (el.className.indexOf("nav-" + name) == -1)
+            el.className = el.className.replace("is-active", "");
+        else
+            el.className += " is-active";
+    });
+    loadTemplate(name);
+}
+
 function loadTemplate(name) {
     var renderTarget = document.querySelector(".render-target");
     var t = document.querySelector('template[name="' + name + '"]');
@@ -16,7 +27,7 @@ function reboot() {
 
     rebootButton.className += " is-loading";
     cancelButton.className += " is-disabled";
-    
+
     httpGetAsync('/reboot', function (res) {
         window.location.href = window.location.href;
     });

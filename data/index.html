@@ -3,6 +3,8 @@
     <head>
         <title>FINDTracker</title>
 
+        <!-- TODO Add Font Awesome -->
+
         <link rel="stylesheet" href="/bulma.css">
 
         <link rel="import" href="/config.html">
@@ -17,10 +19,10 @@
                   <a class="nav-item">
                     <img src="/compass.png" alt="Bulma logo">
                   </a>
-                  <a class="nav-item is-tab is-hidden-mobile is-active">Home</a>
-                  <a class="nav-item is-tab is-hidden-mobile">Learning</a>
-                  <a class="nav-item is-tab is-hidden-mobile">Tracking</a>
-                  <a class="nav-item is-tab is-hidden-mobile">WiFi</a>
+                  <a class="nav-item is-tab is-hidden-mobile nav-home" onclick="navigate('home')">Home</a>
+                  <a class="nav-item is-tab is-hidden-mobile nav-learning" onclick="navigate('learning')">Learning</a>
+                  <a class="nav-item is-tab is-hidden-mobile nav-tracking" onclick="navigate('tracking')">Tracking</a>
+                  <a class="nav-item is-tab is-hidden-mobile nav-wifi" onclick="navigate('wifi')">WiFi</a>
                 </div>
                 <span class="nav-toggle">
                     <span></span>
@@ -99,19 +101,48 @@
         </div>
 
         <template name="home">
-                <h3 class="title is-2">
-                    <a href="http://github.com/TheMegaTB/find-esp8266/">
-                        <span class="icon is-medium">
-                            <i class="fa fa-arrows-v"></i>
-                        </span>
-                        FINDTracker
-                    </a>
-                </h3>
-                <h4 class="subtitle is-4">The easy way to track your position indoors</h4>
+            <h3 class="title is-2">
+                <a href="http://github.com/TheMegaTB/find-esp8266/">
+                    <span class="icon is-medium">
+                        <i class="fa fa-arrows-v"></i>
+                    </span>
+                    FINDTracker
+                </a>
+            </h3>
+            <h4 class="subtitle is-4">The easy way to track your position indoors</h4>
+        </template>
+
+        <template name="learning">
+            Learning
+        </template>
+
+        <template name="tracking">
+            <h3 class="title is-2">Tracking settings</h3>
+            <h4 class="subtitle is-4">Configuration properties regarding the tracking functionality</h4>
+
+            <label class="label">Server URL</label>
+            <p class="control has-icon has-icon-right">
+                <input class="input is-danger" type="text" placeholder="http://ml.internalpositioning.com/track">
+                <span class="icon is-small">
+                    <i class="fa fa-warning"></i>
+                </span>
+            </p>
+            <label class="label">Group</label>
+            <p class="control">
+                <input class="input" type="text" placeholder="Family" value="bulma">
+            </p>
+            <label class="label">Username</label>
+            <p class="control">
+                <input class="input" type="text" placeholder="Bob">
+            </p>
+        </template>
+
+        <template name="wifi">
+            WiFi Settings
         </template>
 
         <script>
-            loadTemplate("home");
+            navigate("home");
         </script>
     </body>
 </html>

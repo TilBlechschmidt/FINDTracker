@@ -111,7 +111,7 @@ namespace Terminal {
     }
 
     void println(char* str, int len) {
-        strcat(str, "\n");
+        strcat(str, "\n"); // TODO Since no allocation happened this might be the cause for segfaults
         Terminal::print(str, len+1);
     }
 
