@@ -50,10 +50,12 @@ ConfigServer::ConfigServer(int port) : httpServer(port) {
 
 void ConfigServer::handleNotFound() {
     ESP8266WebServer* srv = &this->httpServer;
-    if (!handleFileRead(srv->uri())) {    
+    String uri = srv->uri();
+    if (uri == "/") uri = INDEX_PAGE_URI;
+    if (!handleFileRead(uri)) {
         String message = "File Not Found\n\n";
         message += "URI: ";
-        message += srv->uri();
+        message += uri;
         message += "\nMethod: ";
         message += (srv->method() == HTTP_GET)?"GET":"POST";
         message += "\nArguments: ";
