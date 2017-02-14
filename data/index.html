@@ -1,0 +1,117 @@
+<html>
+
+    <head>
+        <title>FINDTracker Configuration</title>
+
+        <link rel="stylesheet" href="/bulma.css">
+
+        <link rel="import" href="/config.html">
+        <script src="/main.js"></script>
+
+    </head>
+
+    <body>
+        <nav class="nav has-shadow">
+            <div class="container">
+                <div class="nav-left">
+                  <a class="nav-item">
+                    <img src="/compass.png" alt="Bulma logo">
+                  </a>
+                  <a class="nav-item is-tab is-hidden-mobile is-active">Home</a>
+                  <a class="nav-item is-tab is-hidden-mobile">Learning</a>
+                  <a class="nav-item is-tab is-hidden-mobile">Tracking</a>
+                  <a class="nav-item is-tab is-hidden-mobile">WiFi</a>
+                </div>
+                <span class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+                <div class="nav-right nav-menu">
+                    <a class="nav-item is-tab is-hidden-tablet is-active">Home</a>
+                    <a class="nav-item is-tab is-hidden-tablet">Learning</a>
+                    <a class="nav-item is-tab is-hidden-tablet">Tracking</a>
+                    <a class="nav-item is-tab is-hidden-tablet">WiFi</a>
+                    <a class="nav-item is-tab">Update</a>
+                    <a class="nav-item is-tab" onclick="openModal('reboot')">Reboot</a>
+                </div>
+            </div>
+        </nav>
+
+
+        <div class="container">
+            <section class="hero is-fullheight">
+                <!-- <div class="hero-head">
+                    <div class="container">
+                        <div class="tabs is-centered">
+                            <ul>
+                                <li><a>This is always at the top</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div> -->
+
+                <div class="hero-body">
+                    <div class="container has-text-centered render-target">
+                    </div>
+                </div>
+
+                <!-- <div class="hero-foot">
+                    <div class="container">
+                        <div class="tabs is-centered">
+                            <ul>
+                                <li><a>And this at the bottom</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div> -->
+            </section>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="content has-text-centered">
+                    <p>
+                        <strong>FINDTracker</strong> (ESP8266) by <a href="http://github.com/TheMegaTB">Til Blechschmidt</a>. The source code is licensed
+                        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+                        is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC ANS 4.0</a>.
+                    </p>
+                </div>
+            </div>
+        </footer>
+
+        <div id="modal-ter" class="modal reboot-modal">
+            <div class="modal-background"></div>
+            <div class="modal-card">
+                <section class="modal-card-body">
+                    <div class="content">
+                        <h1>Reboot</h1>
+                        <p>Are you <strong>sure</strong> you want to reboot the FINDTracker? It may take some time for it to reboot and reconnect to your configured WiFi network. Depending on your configuration it might not be able to connect to your WiFi which would require a reset to factory defaults. For details please consult the <a href="">manual</a>.</p>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <span class="column is-4 is-offset-9" style="padding:0">
+                        <a class="button" onclick="closeModal();">Cancel</a>
+                        <a class="button is-success" onclick="reboot();">Reboot</a>
+                    </span>
+                </footer>
+            </div>
+        </div>
+
+        <template name="home">
+                <h3 class="title is-2">
+                    <a href="http://github.com/TheMegaTB/find-esp8266/">
+                        <span class="icon is-medium">
+                            <i class="fa fa-arrows-v"></i>
+                        </span>
+                        FINDTracker
+                    </a>
+                </h3>
+                <h4 class="subtitle is-4">The easy way to track your position indoors</h4>
+        </template>
+
+        <script>
+            loadTemplate("home");
+        </script>
+    </body>
+</html>
