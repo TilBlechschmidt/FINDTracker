@@ -7,18 +7,26 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
-#define INDEX_PAGE_URI "/index.html"
+#include "Config.hpp"
+
+#define INDEX_FILE_NAME "index.html"
 
 class ConfigServer {
     ESP8266WebServer httpServer;
+    Config* cfg;
+
+    void requirePermission();
 
     void handleNotFound();
     void handleReboot();
     bool handleFileRead(String path);
 
+    void handleConfigGet();
+    void handleConfigPost();
+
     String getContentType(String filename);
 public:
-    ConfigServer(int port);
+    ConfigServer(Config* conf, int port);
 
     void handle();
 };

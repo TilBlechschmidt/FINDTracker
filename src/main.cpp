@@ -13,7 +13,7 @@
 Config* conf = new Config();
 Radio rf(conf);
 TrackingData data(conf, 10);
-ConfigServer cfgSrv(80);
+ConfigServer cfgSrv(conf, 80);
 
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
@@ -28,10 +28,10 @@ void setup () {
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
-        conf->read(0);
+        conf->read(EEPROM_CONF_ADDR);
     } else {
         Terminal::println("Restoring factory settings...");
-        conf->write(0);
+        conf->write(EEPROM_CONF_ADDR);
     }
 
     // Setup the radios according to the configuration

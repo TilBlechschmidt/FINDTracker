@@ -11,6 +11,7 @@
 #define DEFAULT_SSID            "B at Home"
 #define DEFAULT_PASSPHRASE      "4898536160015702" // TODO: Put this into a non-git file ;)
 #define AP_PASSPHRASE           "12345678"
+#define DEFAULT_AUTH            "supersecret"
 
 #define DEFAULT_ACTIVE          false
 #define DEFAULT_BUFFER_SIZE     10

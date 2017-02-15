@@ -1,5 +1,11 @@
 #include "ConfigServer.hpp"
 
+void ConfigServer::requirePermission() {
+    ESP8266WebServer* srv = &this->httpServer;
+    if(!srv->authenticate("admin", this->cfg->get<String>("auth").c_str()))
+        return srv->requestAuthentication();
+}
+
 String ConfigServer::getContentType(String filename) {
     if(this->httpServer.hasArg("download")) return "application/octet-stream";
     else if(filename.endsWith(".htm")) return "text/html";
@@ -19,7 +25,7 @@ String ConfigServer::getContentType(String filename) {
 
 bool ConfigServer::handleFileRead(String path) {
     Serial.println("handleFileRead: " + path);
-    if(path.endsWith("/")) path += "index.htm";
+    if(path.endsWith("/")) path += INDEX_FILE_NAME;
     String contentType = getContentType(path);
     String pathWithGz = path + ".gz";
     if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
@@ -33,15 +39,38 @@ bool ConfigServer::handleFileRead(String path) {
     return false;
 }
 
-ConfigServer::ConfigServer(int port) : httpServer(port) {
+void ConfigServer::handleConfigGet() {
+    this->requirePermission();
+
+    String config;
+    this->cfg->data.printTo(config);
+    this->httpServer.send(200, "application/json", config);
+}
+
+void ConfigServer::handleConfigPost() {
+    this->requirePermission();
+
     ESP8266WebServer* srv = &this->httpServer;
-    // srv->on("/inline", [srv](){
-    //     if(!srv->authenticate("admin", "supersecret"))
-    //         return srv->requestAuthentication();
-    //     srv->send(200, "text/plain", "this works as well");
-    // });
+    this->cfg->readFromString(srv->arg("plain"));
+    this->cfg->write(EEPROM_CONF_ADDR);
+    srv->send(200, "application/json", "{result: 'success'}");
+}
+
+void ConfigServer::handleReboot() {
+    this->requirePermission();
+
+    this->httpServer.send(200, "text/plain", "{result: 'success'}");
+    Terminal::println("Rebooting due to request via HTTP");
+    ESP.restart();
+}
+
+ConfigServer::ConfigServer(Config* conf, int port) : httpServer(port), cfg(conf) {
+    ESP8266WebServer* srv = &this->httpServer;
 
     srv->on("/reboot", std::bind(&ConfigServer::handleReboot, this));
+
+    srv->on("/config", HTTP_GET, std::bind(&ConfigServer::handleConfigGet, this));
+    srv->on("/config", HTTP_POST, std::bind(&ConfigServer::handleConfigPost, this));
 
     srv->onNotFound(std::bind(&ConfigServer::handleNotFound, this));
 
@@ -50,19 +79,9 @@ ConfigServer::ConfigServer(int port) : httpServer(port) {
     MDNS.addService("http", "tcp", 80);
 }
 
-void ConfigServer::handleReboot() {
-    ESP8266WebServer* srv = &this->httpServer;
-    if(!srv->authenticate("admin", "supersecret"))
-        return srv->requestAuthentication();
-    srv->send(200, "text/plain", "{result: 'success'}");
-    Terminal::println("Rebooting due to request via HTTP");
-    ESP.restart();
-}
-
 void ConfigServer::handleNotFound() {
     ESP8266WebServer* srv = &this->httpServer;
     String uri = srv->uri();
-    if (uri == "/") uri = INDEX_PAGE_URI;
     if (!handleFileRead(uri)) {
         String message = "File Not Found\n\n";
         message += "URI: ";

@@ -1,6 +1,8 @@
 #include "Config.hpp"
 
 Config::Config() : data(dataBuffer.createObject()) {
+    this->data["auth"] = DEFAULT_AUTH;
+
     this->data["wifiReconnectionInterval"] = DEFAULT_WIFI_RECON_INT;
     this->data["SSID"] = DEFAULT_SSID;
     this->data["passphrase"] = DEFAULT_PASSPHRASE;
@@ -14,6 +16,14 @@ Config::Config() : data(dataBuffer.createObject()) {
     this->data["trackingUser"] = DEFAULT_TRACKING_USER;
 }
 
+void Config::readFromString(String str) {
+    String json = this->dataBuffer.strdup(str);
+    JsonObject& parsed = this->dataBuffer.parseObject(json);
+
+    for(JsonObject::iterator it=parsed.begin(); it!=parsed.end(); ++it)
+        this->data[it->key] = it->value;
+}
+
 void Config::read(int address) {
     char currentChar;
     String json;
@@ -23,11 +33,7 @@ void Config::read(int address) {
         json += currentChar;
     }
 
-    String storedJson = this->dataBuffer.strdup(json);
-    JsonObject& parsed = this->dataBuffer.parseObject(storedJson);
-
-    for(JsonObject::iterator it=parsed.begin(); it!=parsed.end(); ++it)
-        this->data[it->key] = it->value;
+    this->readFromString(json);
 }
 
 void Config::write(int addr) {

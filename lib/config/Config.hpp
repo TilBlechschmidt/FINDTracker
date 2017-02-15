@@ -17,6 +17,7 @@ public:
     Config(int EEPROMAdress);
 
     void read(int address);
+    void readFromString(String str);
     void write(int EEPROMAdress);
 
     template<typename T>

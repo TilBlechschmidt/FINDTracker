@@ -29,7 +29,7 @@ export function reboot() {
     rebootButton.className += " is-loading";
     cancelButton.className += " is-disabled";
 
-    httpGetAsync('/reboot', function (res) {
+    httpAsync('/reboot', function (res) {
         window.location.href = window.location.href;
     });
 }
@@ -38,14 +38,14 @@ function makeLoading(e) {
     e.className = e.className + " is-loading";
 }
 
-function httpGetAsync(theUrl, callback) {
+function httpAsync(theUrl, callback, type, payload) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function() {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
             callback(xmlHttp.responseText);
     }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous
-    xmlHttp.send(null);
+    xmlHttp.open(type ? type : "GET", theUrl, true); // true for asynchronous
+    xmlHttp.send(payload);
 }
 
 export function openModal(name) {
