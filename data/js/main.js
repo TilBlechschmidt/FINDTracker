@@ -1,23 +1,18 @@
 function navigate(name) {
     var navElements = document.querySelectorAll(".nav-item");
     navElements.forEach(function (el) {
-        if (el.className.indexOf("nav-" + name) == -1)
-            el.className = el.className.replace("is-active", "");
-        else
+        el.className = el.className.replace("is-active", "");
+        if (el.className.indexOf("nav-" + name) > -1)
             el.className += " is-active";
     });
     loadTemplate(name);
 }
 
 function loadTemplate(name) {
-    var renderTarget = document.querySelector(".render-target");
-    var t = document.querySelector('template[name="' + name + '"]');
-    var clone = document.importNode(t.content, true);
-
-    while (renderTarget.hasChildNodes())
-        renderTarget.removeChild(renderTarget.lastChild);
-
-    renderTarget.appendChild(clone);
+    var template = document.querySelector("#template-" + name).innerHTML;
+    Mustache.parse(template);
+    document.querySelector(".render-target").innerHTML =
+                            Mustache.render(template, { something: "test"});
 }
 
 function reboot() {

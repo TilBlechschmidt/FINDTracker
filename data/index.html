@@ -6,10 +6,11 @@
         <!-- CDN Version only | When the user is not connected to the internet then no icons for him -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
 
-        <link rel="stylesheet" href="/bulma.min.css">
+        <link rel="stylesheet" href="/node_modules/bulma/css/bulma.css">
 
         <!-- <link rel="import" href="/config.html"> -->
-        <script src="/main.js"></script>
+        <script src="/node_modules/mustache/mustache.min.js"></script>
+        <script src="/js/main.js"></script>
     </head>
 
     <body>
@@ -41,22 +42,21 @@
         </nav>
 
 
-        <div class="container">
-            <section class="hero is-fullheight">
+        <div class="container render-target">
+            <!-- <section class="hero is-fullheight"> -->
                 <!-- <div class="hero-head">
                     <div class="container">
-                        <div class="tabs is-centered">
-                            <ul>
-                                <li><a>This is always at the top</a></li>
-                            </ul>
+                        <div class="content has-text-centered" style="padding-top: 5em">
+                            <h3 class="title is-2">Tracking settings</h3>
+                            <h4 class="subtitle is-4">Configuration properties regarding the tracking functionality</h4>
                         </div>
                     </div>
-                </div> -->
+                </div>
 
                 <div class="hero-body">
-                    <div class="container has-text-centered render-target">
+                    <div class="container has-text-centered">
                     </div>
-                </div>
+                </div> -->
 
                 <!-- <div class="hero-foot">
                     <div class="container">
@@ -67,15 +67,16 @@
                         </div>
                     </div>
                 </div> -->
-            </section>
+            <!-- </section> -->
         </div>
 
         <footer class="footer">
             <div class="container">
                 <div class="content has-text-centered">
                     <p>
-                        <strong>FINDTracker</strong> by <a href="http://github.com/TheMegaTB">Til Blechschmidt</a>. The source code is licensed
-                        <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
+                        <strong>FINDTracker</strong> by <a href="http://github.com/TheMegaTB">Til Blechschmidt</a>.
+                        <hr>
+                        The source code is licensed <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
                         is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC ANS 4.0</a>.
                     </p>
                 </div>
@@ -100,46 +101,162 @@
             </div>
         </div>
 
-        <template name="home">
-            <h3 class="title is-2">
-                <a href="http://github.com/TheMegaTB/FINDTracker/">
-                    <span class="icon is-medium is-centered" style="line-height: 43px;">
-                        <i class="fa fa-compass" aria-hidden="true"></i>
-                    </span>
-                    FINDTracker
-                </a>
-            </h3>
-            <h4 class="subtitle is-4">The easy way to track your position indoors</h4>
-        </template>
+        <script id="template-home" type="x-tmpl-mustache">
+            <section class="hero is-fullheight">
+                <div class="hero-body">
+                    <div class="container has-text-centered">
+                        <h3 class="title is-2">
+                            <a href="http://github.com/TheMegaTB/FINDTracker/">
+                                <span class="icon is-medium is-centered" style="line-height: 43px;">
+                                    <i class="fa fa-compass" aria-hidden="true"></i>
+                                </span>
+                                FINDTracker
+                            </a>
+                        </h3>
+                        <h4 class="subtitle is-4">The easy way to track your position indoors</h4>
+                    </div>
+                </div>
+            </section>
+        </script>
 
-        <template name="learning">
-            Learning
-        </template>
+        <script id="template-learning" type="x-tmpl-mustache">
+            <section class="hero">
+                <div class="hero-head">
+                    <div class="container">
+                        <div class="content has-text-centered" style="padding-top: 5em">
+                            <h3 class="title is-2">Location learning</h3>
+                            <h4 class="subtitle is-4">Learn the fingerprints for locations you want to track in</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-body">
+                    <div class="container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Fingerprinting progress</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Bedroom</td>
+                                    <td>
+                                        <progress class="progress" value="15" max="100">15%</progress>
+                                    </td>
+                                    <td>
+                                        <a class="button">Learn</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="block">
+                            <a class="button is-light">Add Location</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <style>
+                td {
+                    vertical-align: middle !important;
+                }
+            </style>
+        </script>
 
-        <template name="tracking">
-            <h3 class="title is-2">Tracking settings</h3>
-            <h4 class="subtitle is-4">Configuration properties regarding the tracking functionality</h4>
+        <script id="template-tracking" type="x-tmpl-mustache">
+            <section class="hero">
+                <div class="hero-head">
+                    <div class="container">
+                        <div class="content has-text-centered" style="padding-top: 5em">
+                            <h3 class="title is-2">Tracking settings</h3>
+                            <h4 class="subtitle is-4">Configuration properties regarding the tracking functionality</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-body">
+                    <div class="container">
+                        <label class="label">
+                            <h1 class="title is-4">Server</h1>
+                            <h2 class="subtitle is-6">The URL of the tracking server this device should broadcast to.</h2>
+                        </label>
+                        <p class="control has-icon has-icon-right">
+                            <input class="input is-danger" type="text" placeholder="http://ml.internalpositioning.com/track">
+                            <span class="icon is-small">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                        </p>
+                        <br>
+                        <label class="label">
+                            <h1 class="title is-4">Group</h1>
+                            <h2 class="subtitle is-6">The group's name this device should be part of.</h2>
+                        </label>
+                        <p class="control">
+                            <input class="input" type="text" placeholder="Family" value="bulma">
+                        </p>
+                        <br>
+                        <label class="label">
+                            <h1 class="title is-4">User</h1>
+                            <h2 class="subtitle is-6">The user's name this device is carried by.</h2>
+                        </label>
+                        <p class="control">
+                            <input class="input" type="text" placeholder="Bob">
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </script>
 
-            <label class="label">Server URL</label>
-            <p class="control has-icon has-icon-right">
-                <input class="input is-danger" type="text" placeholder="http://ml.internalpositioning.com/track">
-                <span class="icon is-small">
-                    <i class="fa fa-warning"></i>
-                </span>
-            </p>
-            <label class="label">Group</label>
-            <p class="control">
-                <input class="input" type="text" placeholder="Family" value="bulma">
-            </p>
-            <label class="label">Username</label>
-            <p class="control">
-                <input class="input" type="text" placeholder="Bob">
-            </p>
-        </template>
-
-        <template name="wifi">
-            WiFi Settings
-        </template>
+        <script id="template-wifi" type="x-tmpl-mustache">
+            <section class="hero">
+                <div class="hero-head">
+                    <div class="container">
+                        <div class="content has-text-centered" style="padding-top: 5em">
+                            <h3 class="title is-2">WiFi settings</h3>
+                            <h4 class="subtitle is-4">Configuration properties regarding the network connectivity of the tracker</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-body">
+                    <div class="container">
+                        <h1 class="title is-3">WLAN Client</h1>
+                        <label class="label">
+                            <h1 class="title is-4">SSID</h1>
+                            <h2 class="subtitle is-6">The name of the network this device should connect to.</h2>
+                        </label>
+                        <p class="control has-icon has-icon-right">
+                            <input class="input is-danger" type="text" placeholder="YourWiFiNetwork">
+                            <span class="icon is-small">
+                                <i class="fa fa-warning"></i>
+                            </span>
+                        </p>
+                        <label class="label">
+                            <h1 class="title is-4">Passphrase</h1>
+                            <h2 class="subtitle is-6">The passphrase of your wireless network.</h2>
+                        </label>
+                        <p class="control">
+                            <input class="input" type="password" placeholder="supersecret">
+                        </p>
+                        <label class="label">
+                            <h1 class="title is-4">Hostname</h1>
+                            <h2 class="subtitle is-6">How this device should answer to name queries.</h2>
+                        </label>
+                        <p class="control">
+                            <input class="input" type="text" placeholder="FINDTracker">
+                        </p>
+                        <hr>
+                        <h1 class="title is-3">AccessPoint</h1>
+                        <label class="label">
+                            <h1 class="title is-4">Passphrase</h1>
+                            <h2 class="subtitle is-6">The secret words the configuration network (AP) should be protected with.</h2>
+                        </label>
+                        <p class="control">
+                            <input class="input" type="text" placeholder="supersecret">
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </script>
 
         <script>
             navigate("home");
