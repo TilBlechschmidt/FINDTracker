@@ -22,7 +22,7 @@ by executing the following command
 ```
 ./localWebserver.sh
 ```
-It depends on ruby so make sure you installed that
+It depends on ruby so make sure you installed that and don't forget to run `npm install` in the data folder
 ### OTA Serial port
 You can connect to the serial monitor of this device by executing the following
 command
