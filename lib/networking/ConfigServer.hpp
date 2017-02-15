@@ -13,6 +13,7 @@ class ConfigServer {
     ESP8266WebServer httpServer;
 
     void handleNotFound();
+    void handleReboot();
     bool handleFileRead(String path);
 
     String getContentType(String filename);

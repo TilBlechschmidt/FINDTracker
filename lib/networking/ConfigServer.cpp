@@ -35,17 +35,28 @@ bool ConfigServer::handleFileRead(String path) {
 
 ConfigServer::ConfigServer(int port) : httpServer(port) {
     ESP8266WebServer* srv = &this->httpServer;
-    srv->on("/inline", [srv](){
-        if(!srv->authenticate("admin", "supersecret"))
-            return srv->requestAuthentication();
-        srv->send(200, "text/plain", "this works as well");
-    });
+    // srv->on("/inline", [srv](){
+    //     if(!srv->authenticate("admin", "supersecret"))
+    //         return srv->requestAuthentication();
+    //     srv->send(200, "text/plain", "this works as well");
+    // });
+
+    srv->on("/reboot", std::bind(&ConfigServer::handleReboot, this));
 
     srv->onNotFound(std::bind(&ConfigServer::handleNotFound, this));
 
     SPIFFS.begin();
     srv->begin();
     MDNS.addService("http", "tcp", 80);
+}
+
+void ConfigServer::handleReboot() {
+    ESP8266WebServer* srv = &this->httpServer;
+    if(!srv->authenticate("admin", "supersecret"))
+        return srv->requestAuthentication();
+    srv->send(200, "text/plain", "{result: 'success'}");
+    Terminal::println("Rebooting due to request via HTTP");
+    ESP.restart();
 }
 
 void ConfigServer::handleNotFound() {
