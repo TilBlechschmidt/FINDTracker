@@ -64,6 +64,20 @@ void ConfigServer::handleReboot() {
     ESP.restart();
 }
 
+void ConfigServer::handleScan() {
+    TrackingData td(this->cfg, DEFAULT_BUFFER_SIZE);
+    bool success = false;
+    for (int i = DEFAULT_BUFFER_SIZE; i > 0; i--) {
+        while (!success) {
+            success = td.update();
+            delay(200);
+        }
+        success = false;
+    }
+    String environment = td.assemble();
+    this->httpServer.send(200, "application/json", environment);
+}
+
 ConfigServer::ConfigServer(Config* conf, int port) : httpServer(port), cfg(conf) {
     ESP8266WebServer* srv = &this->httpServer;
 
@@ -71,6 +85,8 @@ ConfigServer::ConfigServer(Config* conf, int port) : httpServer(port), cfg(conf)
 
     srv->on("/config", HTTP_GET, std::bind(&ConfigServer::handleConfigGet, this));
     srv->on("/config", HTTP_POST, std::bind(&ConfigServer::handleConfigPost, this));
+
+    srv->on("/scan", HTTP_GET, std::bind(&ConfigServer::handleScan, this));
 
     srv->onNotFound(std::bind(&ConfigServer::handleNotFound, this));
 

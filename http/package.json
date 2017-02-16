@@ -2,7 +2,8 @@
   "name": "FINDTracker",
   "dependencies": {
     "bulma": "^0.3.1",
-    "mustache": "^2.3.0"
+    "mustache": "^2.3.0",
+    "redux": "^3.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
@@ -15,6 +16,7 @@
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1",
+    "webpack-dashboard": "^0.3.0",
     "webpack-dev-server": "^2.3.0"
   }
 }

@@ -7,6 +7,7 @@
 #include <ESP8266mDNS.h>
 #include <FS.h>
 
+#include "TrackingData.hpp"
 #include "Config.hpp"
 
 #define INDEX_FILE_NAME "index.html"
@@ -23,6 +24,8 @@ class ConfigServer {
 
     void handleConfigGet();
     void handleConfigPost();
+
+    void handleScan();
 
     String getContentType(String filename);
 public:

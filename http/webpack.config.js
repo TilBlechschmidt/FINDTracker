@@ -1,6 +1,7 @@
 const webpack = require('webpack'); //to access built-in plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 const path = require('path');
 
 let production = process.env.BUILD_PRODUCTION ? true : false;
@@ -33,12 +34,12 @@ const config = {
     module: {
         rules: [
             { test: /\.css$/, loader: "style-loader!css-loader" },
-            { test: /\.(js|jsx)$/, use: 'babel-loader' }
+            { test: /\.(js|jsx)$/, loader: 'babel-loader', query: { presets: ['es2015'] } }
         ]
     },
     plugins: [
         new webpack.optimize.UglifyJsPlugin(UglifyConfig),
-        new HtmlWebpackPlugin(HTMLConfig)
+        new HtmlWebpackPlugin(HTMLConfig),
     ],
     devServer: {
         stats: {
@@ -49,6 +50,8 @@ const config = {
 
 if (production) {
     config.plugins.push(new HtmlWebpackInlineSourcePlugin());
+} else {
+    config.plugins.push(new DashboardPlugin());
 }
 
 module.exports = config;

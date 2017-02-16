@@ -21,31 +21,8 @@ function loadTemplate(name) {
                             Mustache.render(template, { something: "test"});
 }
 
-export function reboot() {
-    var modal = document.querySelector(".modal.reboot-modal");
-    var rebootButton = modal.querySelector(".button.is-success");
-    var cancelButton = modal.querySelector(".button:not(.is-success)");
-
-    rebootButton.className += " is-loading";
-    cancelButton.className += " is-disabled";
-
-    httpAsync('/reboot', function (res) {
-        window.location.href = window.location.href;
-    });
-}
-
 function makeLoading(e) {
     e.className = e.className + " is-loading";
-}
-
-function httpAsync(theUrl, callback, type, payload) {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-    }
-    xmlHttp.open(type ? type : "GET", theUrl, true); // true for asynchronous
-    xmlHttp.send(payload);
 }
 
 export function openModal(name) {

@@ -12,7 +12,7 @@
 
 Config* conf = new Config();
 Radio rf(conf);
-TrackingData data(conf, 10);
+TrackingData data(conf, DEFAULT_BUFFER_SIZE);
 ConfigServer cfgSrv(conf, 80);
 
 void setup () {
