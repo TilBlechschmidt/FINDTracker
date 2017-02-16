@@ -2,12 +2,15 @@
   "name": "FINDTracker",
   "dependencies": {
     "bulma": "^0.3.1",
-    "mustache": "^2.3.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
     "redux": "^3.6.0"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.1",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
     "css-loader": "^0.26.1",
     "file-loader": "^0.10.0",
     "html-webpack-inline-source-plugin": "0.0.6",

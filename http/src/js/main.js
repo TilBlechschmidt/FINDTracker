@@ -1,36 +1,42 @@
-import * as Mustache from "mustache";
+// import {navigate, closeModal, openModal} from "./js/main";
+// import {reboot} from "./js/api/networking";
+import {learn, stopLearning, updateLocations} from "./api/learn";
+import {reloadConfig} from "./api/store";
 
-var img = document.createElement('img');
-img.src = require('url-loader!../static/compass.png');
-document.getElementById("compass-img").appendChild(img);
+import "./app.jsx";
+import "../css/styles";
 
-export function navigate(name) {
-    var navElements = document.querySelectorAll(".nav-item");
-    navElements.forEach(function (el) {
-        el.className = el.className.replace("is-active", "");
-        if (el.dataset && el.dataset.target && el.dataset.target == name)
-            el.className += " is-active";
-    });
-    loadTemplate(name);
-}
+reloadConfig(() => {
+    learn("bedroom");
+    setTimeout(() => {
+        stopLearning();
+        updateLocations();
+    }, 60000);
+});
 
-function loadTemplate(name) {
-    var template = document.querySelector("#template-" + name).innerHTML;
-    Mustache.parse(template);
-    document.querySelector(".render-target").innerHTML =
-                            Mustache.render(template, { something: "test"});
-}
+// const navLinks = document.querySelectorAll(".nav-item[data-target]");
+// for (var navLink in navLinks) {
+//     if (!navLinks.hasOwnProperty(navLink)) continue;
+//     navLinks[navLink].onclick = function (e) {
+//         navigate(e.target.dataset.target);
+//     }
+// }
+//
+// const closeModals = document.querySelectorAll(".close-modal");
+// for (var el in closeModals) {
+//     if (!closeModals.hasOwnProperty(el)) continue;
+//     closeModals[el].onclick = closeModal;
+// }
+//
+// const openModals = document.querySelectorAll("[data-modal]");
+// for (var el in openModals) {
+//     if (!openModals.hasOwnProperty(el)) continue;
+//     el = openModals[el];
+//     el.onclick = openModal.bind(this, el.dataset.modal);
+// }
+//
+// document.getElementById("reboot").onclick = reboot;
+//
+// navigate("home");
 
-function makeLoading(e) {
-    e.className = e.className + " is-loading";
-}
-
-export function openModal(name) {
-    var modal = document.querySelector(".modal." + name + "-modal");
-    modal.className += " is-active";
-}
-
-export function closeModal() {
-    var modal = document.querySelector(".modal.is-active");
-    modal.className = modal.className.replace("is-active", "");
-}
+document.body.className += " loaded";
