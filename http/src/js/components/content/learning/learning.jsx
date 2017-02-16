@@ -1,9 +1,17 @@
 import React from 'react';
 
 import Room from './room.jsx';
+import {learn} from "../../../api/learn";
 
 export default class Learning extends React.Component {
     render () {
+        const locationNames = Object.keys(this.context.store.getState().locations);
+
+        const test = () => {
+            console.log('hi');
+            learn("Testroom");
+        };
+
         return (
             <section className="hero">
                 <div className="hero-head">
@@ -26,11 +34,11 @@ export default class Learning extends React.Component {
                             </tr>
                             </thead>
                             <tbody>
-                                <Room/>
+                                {locationNames.map((location) => <Room key={location} location={location} />)}
                             </tbody>
                         </table>
                         <div className="block">
-                            <a className="button is-light">Add Location</a>
+                            <a className="button is-light" onClick={test}>Add Location</a>
                         </div>
                     </div>
                 </div>
@@ -38,3 +46,7 @@ export default class Learning extends React.Component {
         );
     }
 }
+
+Learning.contextTypes = {
+    store: React.PropTypes.object
+};

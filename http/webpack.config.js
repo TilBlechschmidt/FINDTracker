@@ -1,10 +1,11 @@
 const webpack = require('webpack'); //to access built-in plugins
 const HtmlWebpackPlugin = require('html-webpack-plugin'); //installed via npm
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+var CompressionPlugin = require("compression-webpack-plugin");
 const DashboardPlugin = require('webpack-dashboard/plugin');
 const path = require('path');
 
-let production = process.env.BUILD_PRODUCTION;
+let production = process.env.NODE_ENV == 'production';
 
 const HTMLConfig = {
     template: './src/index.html',
@@ -40,6 +41,16 @@ const config = {
     },
     plugins: [
         new HtmlWebpackPlugin(HTMLConfig),
+        new webpack.DefinePlugin({
+            PRODUCTION: production,
+        }),
+        new CompressionPlugin({
+            asset: "[path].gz[query]",
+            algorithm: "gzip",
+            test: /\.js$|\.html$/,
+            threshold: 10240,
+            minRatio: 0.8
+        })
     ],
     devServer: {
         stats: {

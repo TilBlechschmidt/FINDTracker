@@ -1,3 +1,21 @@
 td {
     vertical-align: middle !important;
 }
+
+.abort-learning {
+    color: transparent;
+    z-index: 1;
+    -webkit-transition: color 200ms ease-in-out;
+    -moz-transition: color 200ms ease-in-out;
+    -ms-transition: color 200ms ease-in-out;
+    -o-transition: color 200ms ease-in-out;
+    transition: color 200ms ease-in-out;
+}
+
+.button:hover .abort-learning {
+    color: grey;
+}
+
+td:hover .button .abort-learning {
+    color: grey;
+}
