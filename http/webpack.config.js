@@ -18,11 +18,6 @@ const HTMLConfig = {
     inlineSource: production ? '.(js|css)$' : undefined
 };
 
-// const UglifyConfig = {
-//     minimize: true,
-//     sourceMap: !production
-// };
-
 const config = {
     entry: "./src/js/main.js",
     devtool: 'source-map',
@@ -57,7 +52,6 @@ if (production) {
     config.plugins.push(new HtmlWebpackInlineSourcePlugin());
 } else {
     config.plugins.push(new DashboardPlugin());
-    // config.plugins.push(new webpack.optimize.UglifyJsPlugin(UglifyConfig));
 }
 
 module.exports = config;
