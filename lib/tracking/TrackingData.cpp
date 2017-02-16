@@ -66,8 +66,7 @@ String TrackingData::assemble() {
             // Only push the fingerprint if we haven't encountered it yet
             if (std::find(updatedBSSIDs.begin(), updatedBSSIDs.end(), BSSID) == updatedBSSIDs.end()) {
                 /// Add fingerprint to final tracking data
-                StaticJsonBuffer<200> fingerprintBuffer;
-                JsonObject& fp = fingerprintBuffer.createObject();
+                JsonObject& fp = jsonBuffer.createObject();
 
                 /// Set the properties of the fingerprint
                 fp["mac"] = BSSID;
