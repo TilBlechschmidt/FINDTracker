@@ -2,7 +2,8 @@ import { createStore } from 'redux';
 import { httpAsync } from './networking';
 
 const defaultState = {
-    config: {}
+    config: {},
+    learning: undefined
 };
 
 function updateConfig(obj) {
@@ -10,15 +11,21 @@ function updateConfig(obj) {
 }
 
 function appStore(state = defaultState, action) {
-  switch (action.type) {
-      case 'UPDATE_CFG':
-        state.config = Object.assign(state.config, action.config);
-        if (!action.noUpdate)
-            updateConfig(action.config);
-        return state;
-      default:
-        return state;
-  }
+    switch (action.type) {
+        case 'UPDATE_CFG':
+            state.config = Object.assign(state.config, action.config);
+            if (!action.noUpdate)
+                updateConfig(action.config);
+            break;
+        case 'LEARN':
+            state.learning = action.room;
+            break;
+        case 'STOP_LEARNING':
+            state.learning = undefined;
+            break;
+    }
+
+    return state;
 }
 
 export let store = createStore(appStore);

@@ -1,18 +1,15 @@
 import {navigate, closeModal, openModal} from "./js/main";
 import {reboot} from "./js/networking";
-import {learnOnce, updateLocations} from "./js/learn";
+import {learn, stopLearning, updateLocations} from "./js/learn";
 import {reloadConfig} from "./js/store";
 import "../node_modules/bulma/css/bulma.css";
 
-function learn(i) {
-    if (i > 0) {
-        learnOnce("bedroom", learn.bind(this, i-1));
-    }
-}
-
 reloadConfig(() => {
-    learn(100);
-    updateLocations();
+    learn("bedroom");
+    setTimeout(() => {
+        stopLearning();
+        updateLocations();
+    }, 60000);
 });
 
 const navLinks = document.querySelectorAll(".nav-item[data-target]");

@@ -14,7 +14,7 @@ function sendFingerprints(fingerprints, cb) {
     httpAsync(getTrackingServer() + "/learn", (res) => {
         res = JSON.parse(res);
         if (!res.success) throw "Error whilst sending fingerprints (" + res.message + ")!";
-        recalculate(cb);
+        recalculate(cb); // TODO: Run recalculate only when inserting new locations
     }, "POST", JSON.stringify(fingerprints));
 }
 
@@ -41,4 +41,21 @@ export function learnOnce(roomName, cb) {
         fingerprints.time = new Date().getTime();
         sendFingerprints(fingerprints, cb);
     });
+}
+
+export function learn(roomName, noInit) {
+    if (!noInit)
+        store.dispatch({
+            type: 'LEARN',
+            room: roomName
+        });
+    else
+        roomName = store.getState().learning;
+
+    if (roomName)
+        learnOnce("bedroom", learn.bind(this, null, true));
+}
+
+export function stopLearning() {
+    store.dispatch({ type: 'STOP_LEARNING' });
 }
