@@ -49,7 +49,7 @@ export function reloadConfig(cb) {
                 "hostname": "FINDTracker",
                 "active": false,
                 "bufferSize": 10,
-                "trackingURL": "http://10.0.0.38:18003/track",
+                "trackingHost": "http://10.0.0.38:18003/track",
                 "trackingGroup": "Family",
                 "trackingUser": "Til"
             },

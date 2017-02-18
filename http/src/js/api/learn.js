@@ -2,7 +2,7 @@ import {httpAsync} from "./networking";
 import {store} from "./store";
 
 function getTrackingServer() {
-    return store.getState().config.trackingURL.replace("/track", "");
+    return "http://" + store.getState().config.trackingHost;
 }
 
 function recalculate(cb) {

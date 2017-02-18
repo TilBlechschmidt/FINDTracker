@@ -11,7 +11,7 @@ Config::Config() : data(dataBuffer.createObject()) {
     this->data["active"] = DEFAULT_ACTIVE;
     this->data["bufferSize"] = DEFAULT_BUFFER_SIZE;
 
-    this->data["trackingURL"] = DEFAULT_TRACKING_URL;
+    this->data["trackingHost"] = DEFAULT_TRACKING_HOST;
     this->data["trackingGroup"] = DEFAULT_TRACKING_GROUP;
     this->data["trackingUser"] = DEFAULT_TRACKING_USER;
 }

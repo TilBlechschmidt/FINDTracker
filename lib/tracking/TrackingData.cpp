@@ -91,7 +91,7 @@ bool TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
         // TODO: Use async TCP, open a pipe and keep it open just sending new requests
         HTTPClient http;
-        http.begin(this->config->get<String>("trackingURL"));
+        http.begin("http://" + this->config->get<String>("trackingHost") + "/track");
 
         http.addHeader("Content-Type", "application/json");
         http.addHeader("cache-control", "no-cache");

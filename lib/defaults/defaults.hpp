@@ -15,7 +15,7 @@
 
 #define DEFAULT_ACTIVE          false
 #define DEFAULT_BUFFER_SIZE     3
-#define DEFAULT_TRACKING_URL    "http://10.0.0.38:18003/track"
+#define DEFAULT_TRACKING_HOST   "10.0.0.38:18003"
 #define DEFAULT_TRACKING_GROUP  "Family"
 #define DEFAULT_TRACKING_USER   "Til"
 

@@ -6,7 +6,8 @@ import "./app.jsx";
 import "../css/styles";
 
 reloadConfig(() => {
-        updateLocations();
+    // TODO Show error when authentication failed
+    updateLocations();
 });
 
 document.body.className += " loaded";

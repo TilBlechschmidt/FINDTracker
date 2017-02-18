@@ -20,7 +20,6 @@ export default class Learning extends React.Component {
             const roomName = context.addInput.value.toLowerCase();
             this.setState({ adding: true });
             learnOnce(roomName, () => {
-                console.log(context.addInput);
                 context.addInput.value = "";
                 this.setState({ adding: false });
                 learn(roomName);
@@ -46,21 +45,22 @@ export default class Learning extends React.Component {
                                 <th>Fingerprints</th>
                                 <th>Accuracy</th>
                                 <th/>
+                                <th/>
                             </tr>
                             </thead>
                             <tbody>
                                 {locationNames.map((location) => <Room key={location} location={location} />)}
 
                                 <tr>
-                                    <td style={{width: '25%'}}>
-                                        <input className="input" type="text" placeholder="SomeRoom" ref={(input) => { this.addInput = input; }} disabled={adding}/>
+                                    <td>
+                                        <p className="control has-addons">
+                                            <input className="input" type="text" placeholder="SomeRoom" ref={(input) => { this.addInput = input; }} disabled={adding}/>
+                                            <a className={adding ? "button is-loading" : "button"} onClick={addLocation} disabled={adding}>
+                                                Add
+                                            </a>
+                                        </p>
                                     </td>
-                                    <td/>
-                                    <td style={{width: '50%'}}/>
-                                    <td style={{width: '10%'}}>
-                                        <a className={adding ? "button is-loading" : "button"} onClick={addLocation} style={{marginLeft: '10%', width: '80%', pointerEvents: 'auto'}}>
-                                            {adding ? (<i className="fa fa-times-circle abort-learning"/>) : "Learn"}
-                                        </a>
+                                    <td>
                                     </td>
                                 </tr>
                             </tbody>
