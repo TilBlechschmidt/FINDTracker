@@ -8,7 +8,7 @@ export default class Home extends React.Component {
                     <div className="container has-text-centered">
                         <h3 className="title is-2">
                             <a href="http://github.com/TheMegaTB/FINDTracker/">
-                                <span className="icon is-medium is-centered" style={{lineHeight: '43px'}}>
+                                <span className="icon is-medium is-centered" style={{lineHeight: '43px', marginRight: '0.25em'}}>
                                     <i className="fa fa-compass" aria-hidden="true"/>
                                 </span>
                                 FINDTracker

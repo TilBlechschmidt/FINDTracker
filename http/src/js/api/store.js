@@ -4,7 +4,8 @@ import { httpAsync } from './networking';
 const defaultState = {
     config: {},
     locations: {},
-    learning: undefined
+    learning: undefined,
+    location: "home"
 };
 
 function updateConfig(obj) {
@@ -27,6 +28,9 @@ function appStore(state = defaultState, action) {
             break;
         case 'STOP_LEARNING':
             state.learning = undefined;
+            break;
+        case 'NAVIGATE':
+            state.location = action.location;
             break;
     }
 
