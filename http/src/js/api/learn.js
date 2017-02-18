@@ -60,7 +60,6 @@ export function updateLocations() {
         const group = store.getState().config.trackingGroup;
         httpAsync(getTrackingServer() + "/locations?group=" + group, (locations) => {
             locations = JSON.parse(locations);
-            console.log("Locations: ", locations);
             store.dispatch({
                 type: 'UPDATE_LOCATIONS',
                 locations: locations.locations
@@ -70,7 +69,6 @@ export function updateLocations() {
 }
 
 export function learnOnce(roomName, cb) {
-    console.log("Scanning for networks . . .");
     getFingerprints((fingerprints) => {
         console.log("Found " + fingerprints['wifi-fingerprint'].length + " networks.");
         fingerprints.location = roomName;

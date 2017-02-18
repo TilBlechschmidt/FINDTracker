@@ -1,15 +1,30 @@
 import React from 'react';
 
 import Room from './room.jsx';
-import {learn} from "../../../api/learn";
+import {learn, learnOnce} from "../../../api/learn";
 
 export default class Learning extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            adding: false
+        };
+    }
+
     render () {
         const locationNames = Object.keys(this.context.store.getState().locations);
+        const adding = this.state.adding;
 
-        const test = () => {
-            console.log('hi');
-            learn("Testroom");
+        const addLocation = () => {
+            const context = this;
+            const roomName = context.addInput.value.toLowerCase();
+            this.setState({ adding: true });
+            learnOnce(roomName, () => {
+                console.log(context.addInput);
+                context.addInput.value = "";
+                this.setState({ adding: false });
+                learn(roomName);
+            });
         };
 
         return (
@@ -35,11 +50,29 @@ export default class Learning extends React.Component {
                             </thead>
                             <tbody>
                                 {locationNames.map((location) => <Room key={location} location={location} />)}
+
+                                <tr>
+                                    <td style={{width: '25%'}}>
+                                        <input className="input" type="text" placeholder="SomeRoom" ref={(input) => { this.addInput = input; }} disabled={adding}/>
+                                    </td>
+                                    <td/>
+                                    <td style={{width: '50%'}}/>
+                                    <td style={{width: '10%'}}>
+                                        <a className={adding ? "button is-loading" : "button"} onClick={addLocation} style={{marginLeft: '10%', width: '80%', pointerEvents: 'auto'}}>
+                                            {adding ? (<i className="fa fa-times-circle abort-learning"/>) : "Learn"}
+                                        </a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
-                        <div className="block">
-                            <a className="button is-light" onClick={test}>Add Location</a>
-                        </div>
+                        {/*<div className="block control is-grouped">*/}
+                            {/*<p className="control">*/}
+                                {/*<input className="input" type="text" placeholder="SomeRoom" />*/}
+                            {/*</p>*/}
+                            {/*<p className="control">*/}
+                                {/*<a className="button is-light" onClick={addLocation}>Add Location</a>*/}
+                            {/*</p>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             </section>
