@@ -10,13 +10,6 @@ export function httpAsync(theUrl, callback, type, payload) {
 }
 
 export function reboot() {
-    const modal = document.querySelector(".modal.reboot-modal");
-    const rebootButton = modal.querySelector(".button.is-success");
-    const cancelButton = modal.querySelector(".button:not(.is-success)");
-
-    rebootButton.className += " is-loading";
-    cancelButton.className += " is-disabled";
-
     if (!PRODUCTION)
         setTimeout(() => {
             window.location.href = window.location.href;

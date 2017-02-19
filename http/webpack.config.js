@@ -20,7 +20,7 @@ const HTMLConfig = {
 };
 
 const config = {
-    entry: "./src/js/main.js",
+    entry: "./src/js/main.jsx",
     devtool: 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),

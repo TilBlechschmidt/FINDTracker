@@ -1,5 +1,6 @@
-import React from 'react';
+import React from "react";
 import {reboot} from "../api/networking";
+import {showModal} from "./modals/modal.jsx";
 
 export default class Navigation extends React.Component {
     componentDidMount() {
@@ -12,7 +13,21 @@ export default class Navigation extends React.Component {
         };
     }
 
-    render () {
+    reboot() {
+        showModal((
+            <div className="content">
+                <h1>Reboot</h1>
+                <p>Are you <strong>sure</strong> you want to reboot the FINDTracker? It may take some time for it to
+                    reboot and reconnect to your configured WiFi network. Depending on your configuration it might not
+                    be able to connect to your WiFi which would require a reset to factory defaults. For details please
+                    consult the <a href="">manual</a>.</p>
+            </div>
+        ), "Reboot", () => {
+            reboot();
+        });
+    }
+
+    render() {
         const mobileHiddenClassName = "nav-item is-tab is-hidden-mobile";
         const tabletHiddenClassName = "nav-item is-tab is-hidden-tablet";
         const currentLocation = this.props.location;
@@ -66,7 +81,7 @@ export default class Navigation extends React.Component {
                         </a>
                         <a className="nav-item is-tab">Update</a>
                         {/* TODO Show a modal BEFORE rebooting (modal component maybe) */}
-                        <a className="nav-item is-tab" onClick={reboot}>Reboot</a>
+                        <a className="nav-item is-tab" onClick={this.reboot}>Reboot</a>
                     </div>
                 </div>
             </nav>
