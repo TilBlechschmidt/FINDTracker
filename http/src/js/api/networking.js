@@ -1,13 +1,25 @@
+const HTTP_TIMEOUT = 30000;
+
 export function httpAsync(theUrl, callback, type, payload, errorCB) {
     const xmlHttp = new XMLHttpRequest();
-    xmlHttp.timeout = 30000; // Set timeout to 30s 'cause ESPs are slow
+    const timeout = setTimeout(() => {
+        xmlHttp.abort();
+        if (typeof errorCB === 'function') errorCB();
+    }, HTTP_TIMEOUT);
+
+    xmlHttp.timeout = HTTP_TIMEOUT; // Set timeout to 30s 'cause ESPs are slow
     xmlHttp.onreadystatechange = function() {
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            clearTimeout(timeout);
             if (typeof callback === 'function') callback(xmlHttp.responseText);
-            else if (typeof errorCB === 'function')
-                errorCB();
+            else if (typeof errorCB === 'function') errorCB();
+        }
     };
-    xmlHttp.onerror = errorCB;
+    xmlHttp.onerror = () => {
+        clearTimeout(timeout);
+        if (typeof errorCB === 'function') errorCB();
+    };
+
     xmlHttp.open(type ? type : "GET", theUrl, true); // true for asynchronous
     xmlHttp.send(payload);
 }
