@@ -1,5 +1,8 @@
 #include "TrackingData.hpp"
 
+IPAddress smpIP(224, 0, 0, 1);
+unsigned int remotePort = 1337;
+
 void TrackingData::initiateScan() {
     WiFi.scanNetworks(true, true);
 }
@@ -87,6 +90,28 @@ String TrackingData::assemble() {
     return td;
 }
 
+void TrackingData::sendSMPStateUpdate(String data) {
+    DynamicJsonBuffer buf;
+    JsonObject& location = buf.parseObject(data);
+    JsonObject& payload = buf.createObject();
+    payload["location"] = location["location"];
+    payload["user"] = this->config->get<String>("trackingUser");
+
+    JsonObject& response = buf.createObject();
+    response["action"] = "stateUpdate";
+    response["payload"] = payload;
+
+    String datagram;
+    response.printTo(datagram);
+
+    // TODO Handle network reconnects
+    this->udpSock.begin(1337);
+    this->udpSock.beginMulticast(IPAddress(0, 0, 0, 0), IPAddress(224, 0, 0, 1), 1337);
+    this->udpSock.beginPacket(smpIP, remotePort);
+    for (int i = 0; i < datagram.length(); ++i) this->udpSock.write(datagram.charAt(i));
+    this->udpSock.endPacket();
+}
+
 bool TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
         // TODO: Use async TCP, open a pipe and keep it open just sending new requests
@@ -105,6 +130,7 @@ bool TrackingData::send() {
 #ifdef DEBUG
             Terminal::println(payload);
 #endif
+            this->sendSMPStateUpdate(payload);
             return true;
         } else {
             Terminal::printf("HTTP POST failed with code %d\n", httpCode);
