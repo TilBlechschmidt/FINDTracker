@@ -1,5 +1,5 @@
-import { createStore } from 'redux';
-import { httpAsync } from './networking';
+import {createStore} from "redux";
+import {httpAsync} from "./networking";
 
 const defaultState = {
     config: {},
@@ -53,7 +53,7 @@ export function reloadConfig(cb) {
                 "hostname": "FINDTracker",
                 "active": false,
                 "bufferSize": 10,
-                "trackingHost": "http://10.0.0.38:18003/track",
+                "trackingHost": "10.0.0.38:18003",
                 "trackingGroup": "Family",
                 "trackingUser": "Til"
             },

@@ -1,7 +1,8 @@
-import React from 'react';
-
-import Room from './room.jsx';
+import React from "react";
+import Room from "./room.jsx";
 import {learn, learnOnce} from "../../../api/learn";
+import {showModal, showLoader, closeModal} from "../../modal.jsx";
+import {httpAsync} from "../../../api/networking";
 
 export default class Learning extends React.Component {
     constructor(props) {
@@ -9,6 +10,33 @@ export default class Learning extends React.Component {
         this.state = {
             adding: false
         };
+    }
+
+    componentDidMount() {
+        if (PRODUCTION || !PRODUCTION) {
+            const store = this.context.store;
+            const config = store.getState().config;
+            showLoader("Please wait while connecting to the tracking server ...");
+            httpAsync("http://" + config.trackingHost + "/locations?group=" + config.trackingGroup, closeModal, "GET", null, (a) => {
+                console.log("CANCEL CALLBACK", a);
+                store.dispatch({
+                    type: 'NAVIGATE',
+                    location: 'home'
+                });
+                closeModal();
+                showModal((
+                    <div className="content">
+                        <h1>Houston, we've got a problem!</h1>
+                        <p>I'm terribly sorry but we weren't able to connect to the tracking server hence you cannot run
+                            the
+                            learning process. Please make sure that <strong>your</strong> computer can reach the
+                            tracking server. This is necessary since your browser takes care of the learning process
+                            utilizing
+                            the data received from your tracker.</p>
+                    </div>
+                ), "Ok", null, null, null, true);
+            });
+        }
     }
 
     render () {
