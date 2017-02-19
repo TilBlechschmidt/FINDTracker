@@ -1,30 +1,17 @@
-import React from 'react';
+import React from "react";
 import {Provider} from "react-redux";
-import {render} from 'react-dom';
-
+import {render} from "react-dom";
 import {store} from "./api/store";
-
 // Page structure
-import Navigation from './components/navigation.jsx';
-import Footer from './components/footer.jsx';
-
+import Navigation from "./components/navigation.jsx";
+import Footer from "./components/footer.jsx";
 // Page content
-import Home from './components/content/home.jsx';
-import WiFi from './components/content/wifi.jsx';
-import Tracking from './components/content/tracking.jsx';
-import Learning from './components/content/learning/learning.jsx';
-
-// Miscellaneous
-import RebootModal from './components/modals/reboot.jsx';
-import Modal from './components/modals/modal.jsx';
+import Home from "./components/content/home.jsx";
+import WiFi from "./components/content/wifi.jsx";
+import Tracking from "./components/content/tracking.jsx";
+import Learning from "./components/content/learning/learning.jsx";
 
 class App extends React.Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         location: "home"
-    //     };
-    // }
     render () {
         const location = this.context.store.getState().location;
 
@@ -47,8 +34,6 @@ class App extends React.Component {
                 <Navigation location={location} />
                 {content}
                 <Footer/>
-
-                {/*<RebootModal/>*/}
             </div>
         );
     }
