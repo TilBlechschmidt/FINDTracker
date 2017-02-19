@@ -24,7 +24,7 @@ String ConfigServer::getContentType(String filename) {
 }
 
 bool ConfigServer::handleFileRead(String path) {
-    Serial.println("handleFileRead: " + path);
+    Terminal::println("handleFileRead: " + path);
     if(path.endsWith("/")) path += INDEX_FILE_NAME;
     String contentType = getContentType(path);
     String pathWithGz = path + ".gz";
