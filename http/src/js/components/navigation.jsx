@@ -1,6 +1,6 @@
 import React from "react";
 import {reboot} from "../api/networking";
-import {showModal} from "./modals/modal.jsx";
+import {showModal} from "./modal.jsx";
 
 export default class Navigation extends React.Component {
     componentDidMount() {
