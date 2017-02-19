@@ -64,9 +64,14 @@ void OTA() {
 }
 
 namespace Terminal {
+    WiFiUDP ntpUDP;
+    NTPClient timeClient(ntpUDP, NTP_ADDRESS, NTP_OFFSET, NTP_INTERVAL);
+
     WiFiServer server(23);
     WiFiClient clients[MAX_SRV_CLIENTS];
     uint8_t i;
+
+    bool newLine = true;
 
     void begin(int baudrate) {
         Serial.begin(baudrate);
@@ -74,9 +79,13 @@ namespace Terminal {
 
         server.begin();
         server.setNoDelay(true);
+
+        timeClient.begin();
     }
 
     void handle() {
+        timeClient.update();
+
         // Check if there are any new clients
         if (server.hasClient()) {
             for(i = 0; i < MAX_SRV_CLIENTS; i++){
@@ -94,7 +103,17 @@ namespace Terminal {
         }
     }
 
+    void printTime() {
+        String formattedTime = "[" + timeClient.getFormattedTime() + "] ";
+        Terminal::print((char*) formattedTime.c_str(), formattedTime.length());
+    }
+
     void print(char* str, int len) {
+        if (newLine) {
+            newLine = false;
+            printTime();
+        }
+
         Serial.print(str);
 
         //push UART data to all connected telnet clients
@@ -102,6 +121,13 @@ namespace Terminal {
             if (clients[i] && clients[i].connected()) {
                 clients[i].write((const uint8_t*) str, len);
                 delay(1);
+            }
+        }
+
+        for (int i = len; i > -1; --i) {
+            if (str[i] == '\n') {
+                newLine = true;
+                break;
             }
         }
     }

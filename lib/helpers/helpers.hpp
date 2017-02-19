@@ -10,7 +10,15 @@ extern "C" {
 #include <vector>
 #include <Ticker.h>
 
+#include <NTPClient.h>
+#include <ESP8266WiFi.h>
+
 #include "defaults.hpp"
+
+#define NTP_OFFSET   60 * 60      // In seconds
+#define NTP_INTERVAL 60 * 1000    // In miliseconds
+#define NTP_ADDRESS  "europe.pool.ntp.org"
+
 
 void blink();
 void blinkSync();
@@ -23,6 +31,8 @@ int vasprintf(char** strp, const char* fmt, va_list ap, int* size);
 namespace Terminal {
     void begin(int baudrate);
     void handle();
+
+    void printTime();
 
     void print(char* str, int len);
     void print(String str);
