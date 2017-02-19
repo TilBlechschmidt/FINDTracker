@@ -17,7 +17,8 @@ export default class Learning extends React.Component {
 
         const addLocation = () => {
             const context = this;
-            const roomName = context.addInput.value.toLowerCase();
+            const roomName = context.addInput.value.toLowerCase().replace(/\s/g,'');
+            if (roomName == "") return;
             this.setState({ adding: true });
             learnOnce(roomName, () => {
                 context.addInput.value = "";
@@ -54,7 +55,7 @@ export default class Learning extends React.Component {
                                 <tr>
                                     <td>
                                         <p className="control has-addons">
-                                            <input className="input" type="text" placeholder="SomeRoom" ref={(input) => { this.addInput = input; }} disabled={adding}/>
+                                            <input className="input" type="text" placeholder="New room" ref={(input) => { this.addInput = input; }} disabled={adding}/>
                                             <a className={adding ? "button is-loading" : "button"} onClick={addLocation} disabled={adding}>
                                                 Add
                                             </a>
@@ -65,14 +66,6 @@ export default class Learning extends React.Component {
                                 </tr>
                             </tbody>
                         </table>
-                        {/*<div className="block control is-grouped">*/}
-                            {/*<p className="control">*/}
-                                {/*<input className="input" type="text" placeholder="SomeRoom" />*/}
-                            {/*</p>*/}
-                            {/*<p className="control">*/}
-                                {/*<a className="button is-light" onClick={addLocation}>Add Location</a>*/}
-                            {/*</p>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
             </section>

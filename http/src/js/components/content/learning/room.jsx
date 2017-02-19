@@ -25,6 +25,8 @@ export default class Room extends React.Component {
                 learn(locationName);
         };
 
+        // TODO Multiply accuracy with a decimal value (0-1) that approaches one as the fingerprint count rises
+
         return (
             <tr>
                 <td style={{width: '26%'}}>{this.props.location.capitalizeFirstLetter()}</td>
@@ -33,7 +35,7 @@ export default class Room extends React.Component {
                     <progress className="progress" value={location.accuracy} max="100">{location.accuracy}%</progress>
                 </td>
                 <td style={{width: '6%'}}>
-                    <a className={scanning ? "button is-loading" : "button"} onClick={handleClick} style={{pointerEvents: 'auto'}}>
+                    <a className={scanning ? "button is-loading" : "button"} onClick={handleClick} style={{pointerEvents: 'auto', width: '60px'}}>
                         {scanning ? (<i className="fa fa-times-circle abort-learning"/>) : "Learn"}
                     </a>
                 </td>
