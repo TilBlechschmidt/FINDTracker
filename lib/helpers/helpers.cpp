@@ -93,7 +93,6 @@ namespace Terminal {
                 if (!clients[i] || !clients[i].connected()) {
                   if(clients[i]) clients[i].stop();
                   clients[i] = server.available();
-                //   Serial.print("New client: "); Serial.print(i);
                   continue;
                 }
             }

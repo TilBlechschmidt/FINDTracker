@@ -26,7 +26,7 @@ void OTA();
 
 int vasprintf(char** strp, const char* fmt, va_list ap, int* size);
 
-#define MAX_SRV_CLIENTS 1
+#define MAX_SRV_CLIENTS 5
 
 namespace Terminal {
     void begin(int baudrate);
