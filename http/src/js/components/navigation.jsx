@@ -3,6 +3,14 @@ import {reboot} from "../api/networking";
 import {showModal} from "./modal.jsx";
 
 export default class Navigation extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            location: "Bedroom"
+        }
+    }
+
     componentDidMount() {
         const store = this.context.store;
         this.checkbox.onchange = function (e) {
@@ -77,7 +85,8 @@ export default class Navigation extends React.Component {
                         <a className={generateClassName('wifi', tabletHiddenClassName)} onClick={navigate.bind(this, 'wifi')}>WiFi</a>
                         <a className="nav-item is-tab">
                             {checkbox}
-                            <label htmlFor="checkbox2" className="checkbox-label" data-off="Not tracking" data-on=""/>
+                            <label htmlFor="checkbox2" className="checkbox-label" data-off="Not tracking"
+                                   data-on={this.state.location ? String.fromCharCode(parseInt("f124", 16)) + " " + this.state.location : null}/>
                         </a>
                         <a className="nav-item is-tab">Update</a>
                         {/* TODO Show a modal BEFORE rebooting (modal component maybe) */}
