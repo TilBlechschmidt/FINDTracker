@@ -9,6 +9,9 @@ by the FIND server.
 
 ## Usage
 
+## Flashing
+Make sure you installed PlatformIO and npm. Then run `./flash.sh`
+
 ## Development
 ### PlatformIO
 This project relies on [PlatformIO](http://platformio.org/) to manage dependencies,
