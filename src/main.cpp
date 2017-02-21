@@ -87,6 +87,9 @@ void loop() {
     // Run all kinds of server handlers
     runServerHandlers();
 
+    // Send a watchdog signal for all websocket clients
+    if (millis() % 1000) webSocket.broadcastTXT("watchdog");
+
     // Enter a very basic sleep mode and limit the amount of cycles to preserve power
     // (Turn off the radio and wake it up periodically to answer beacon signals from router)
     // TODO Only do this when nothing else is connected (low power mode setting maybe?)
