@@ -28,6 +28,9 @@ void setup () {
     /// Open up the serial and TCP monitor
     Terminal::begin(115200);
 
+    // Print some stats
+    Terminal::printf("CPU running at %dMHz, Cycle %d, Flash chip running at %d MHz, VCC is at %d\n", ESP.getCpuFreqMHz(), ESP.getCycleCount(), ESP.getFlashChipSpeed()/1000000, ESP.getVcc());
+
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
         conf->read(EEPROM_CONF_ADDR);
@@ -88,12 +91,12 @@ void loop() {
     runServerHandlers();
 
     // Send a watchdog signal for all websocket clients
-    if (millis() % 1000) webSocket.broadcastTXT("watchdog");
+    if (millis() % 5000) webSocket.broadcastTXT("watchdog");
 
     // Enter a very basic sleep mode and limit the amount of cycles to preserve power
     // (Turn off the radio and wake it up periodically to answer beacon signals from router)
     // TODO Only do this when nothing else is connected (low power mode setting maybe?)
     //      since it breaks all kind of things like websockets, HTTP etc.
-    // WiFi.setSleepMode(WIFI_MODEM_SLEEP);
-    // delay(1000);
+    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
+    delay(500);
 }
