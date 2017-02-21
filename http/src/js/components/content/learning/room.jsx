@@ -1,13 +1,14 @@
-import React from 'react';
-
+import React from "react";
 import {learn, stopLearning} from "../../../api/learn";
 import {httpAsync} from "../../../api/networking";
 
-function deleteRoom(locationName) {
+function deleteRoom(locationName, trackingHost) {
     if (!PRODUCTION)
         console.log("Deleted room " + locationName);
     if (PRODUCTION)
-        httpAsync("http://localhost:18003/location?group=family&location=" + locationName, function (e) { console.log(e); }, "DELETE");
+        httpAsync("http://" + trackingHost + "/location?group=family&location=" + locationName, function (e) {
+            console.log(e);
+        }, "DELETE");
 }
 
 export default class Room extends React.Component {
@@ -40,7 +41,8 @@ export default class Room extends React.Component {
                     </a>
                 </td>
                 <td style={{width: '6%'}}>
-                    <a className="button is-danger" onClick={deleteRoom.bind(this, locationName)}>Delete</a>
+                    <a className="button is-danger"
+                       onClick={deleteRoom.bind(this, locationName, state.config.trackingHost)}>Delete</a>
                 </td>
             </tr>
         );
