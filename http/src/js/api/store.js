@@ -32,6 +32,8 @@ function appStore(state = defaultState, action) {
         case 'NAVIGATE':
             state.location = action.location;
             break;
+        case 'TRACKED':
+            state.trackedLocation = action.location;
     }
 
     console.log(action.type, state);
@@ -40,6 +42,8 @@ function appStore(state = defaultState, action) {
 }
 
 export let store = createStore(appStore);
+let locationSocket;
+let trackedLocationReset;
 
 export function reloadConfig(cb) {
     if (!PRODUCTION) {
@@ -61,7 +65,7 @@ export function reloadConfig(cb) {
         });
         cb();
     }
-    if (PRODUCTION)
+    if (PRODUCTION) {
         httpAsync("/config", (cfg) => {
             cfg = JSON.parse(cfg);
             store.dispatch({
@@ -71,4 +75,20 @@ export function reloadConfig(cb) {
             });
             if (typeof cb === 'function') cb();
         });
+        if (locationSocket) locationSocket.close();
+        locationSocket = new WebSocket("ws://" + location.hostname + ":81");
+        locationSocket.onmessage = (msg) => {
+            const newLocation = JSON.parse(msg.data).location;
+            console.log(newLocation, store.getState().trackedLocation);
+
+            if (trackedLocationReset) clearTimeout(trackedLocationReset);
+            trackedLocationReset = setTimeout(() => store.dispatch({ type: 'TRACKED', location: undefined }), 15000);
+
+            if (newLocation != store.getState().trackedLocation)
+                store.dispatch({
+                    type: 'TRACKED',
+                    location: newLocation.capitalizeFirstLetter()
+                });
+        }
+    }
 }

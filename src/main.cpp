@@ -89,6 +89,8 @@ void loop() {
 
     // Enter a very basic sleep mode and limit the amount of cycles to preserve power
     // (Turn off the radio and wake it up periodically to answer beacon signals from router)
-    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
-    delay(1000);
+    // TODO Only do this when nothing else is connected (low power mode setting maybe?)
+    //      since it breaks all kind of things like websockets, HTTP etc.
+    // WiFi.setSleepMode(WIFI_MODEM_SLEEP);
+    // delay(1000);
 }

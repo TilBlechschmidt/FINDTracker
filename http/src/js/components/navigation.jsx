@@ -3,14 +3,6 @@ import {reboot} from "../api/networking";
 import {showModal} from "./modal.jsx";
 
 export default class Navigation extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            location: "Bedroom"
-        }
-    }
-
     componentDidMount() {
         const store = this.context.store;
         this.checkbox.onchange = function (e) {
@@ -40,7 +32,8 @@ export default class Navigation extends React.Component {
         const tabletHiddenClassName = "nav-item is-tab is-hidden-tablet";
         const currentLocation = this.props.location;
         const store = this.context.store;
-        const active = store.getState().config.active;
+        const state = store.getState();
+        const active = state.config.active;
 
         function generateClassName(location, additional) {
             return additional + " " + (location == currentLocation ? "is-active" : undefined);
@@ -86,7 +79,7 @@ export default class Navigation extends React.Component {
                         <a className="nav-item is-tab">
                             {checkbox}
                             <label htmlFor="checkbox2" className="checkbox-label" data-off="Not tracking"
-                                   data-on={this.state.location ? String.fromCharCode(parseInt("f124", 16)) + " " + this.state.location : null}/>
+                                   data-on={state.trackedLocation ? String.fromCharCode(parseInt("f124", 16)) + " " + state.trackedLocation : null}/>
                         </a>
                         <a className="nav-item is-tab">Update</a>
                         {/* TODO Show a modal BEFORE rebooting (modal component maybe) */}
