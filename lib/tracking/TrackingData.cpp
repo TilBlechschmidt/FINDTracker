@@ -18,7 +18,6 @@ bool TrackingData::update() {
     }
 
     /// If there was a previous scan and the scan is not running the status equals the number of networks discovered
-    // int networkCount = status;
 
     // Create a list of fingerprints
     std::vector<String> BSSIDs;
@@ -112,7 +111,7 @@ void TrackingData::sendSMPStateUpdate(String data) {
     this->udpSock.endPacket();
 }
 
-bool TrackingData::send() {
+String TrackingData::send() {
     if (WiFi.status() == WL_CONNECTED) {
         // TODO: Use async TCP, open a pipe and keep it open just sending new requests
         HTTPClient http;
@@ -131,7 +130,7 @@ bool TrackingData::send() {
             Terminal::println(payload);
 #endif
             this->sendSMPStateUpdate(payload);
-            return true;
+            return payload;
         } else {
             Terminal::printf("HTTP POST failed with code %d\n", httpCode);
             Terminal::println(http.errorToString(httpCode));
@@ -141,5 +140,5 @@ bool TrackingData::send() {
         Terminal::println("Couldn't send request since there's no WiFi connection");
     }
 
-    return false;
+    return "";
 }

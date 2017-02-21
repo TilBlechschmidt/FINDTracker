@@ -15,6 +15,8 @@ Radio rf(conf);
 TrackingData data(conf, DEFAULT_BUFFER_SIZE);
 ConfigServer cfgSrv(conf, 80);
 
+WebSocketsServer webSocket(81);
+
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
     EEPROM.begin(4096);
@@ -39,12 +41,17 @@ void setup () {
 
     // Setup the OTA server
     OTA();
+
+    // Setup the websocket server
+    webSocket.begin();
+    // webSocket.onEvent(webSocketEvent);
 }
 
 void runServerHandlers() {
     ArduinoOTA.handle();
     cfgSrv.handle();
     Terminal::handle();
+    webSocket.loop();
 }
 
 int sleepTimeMS;
@@ -67,10 +74,13 @@ void loop() {
         /// Update the environment data (scan for networks)
         if (data.update()) {
             // Send the data to the FIND Server
-            bool successful = data.send();
+            String response = data.send();
 
             /// Blink to indicate that we have sent our location
-            if (successful) blink();
+            if (response != "") {
+                blink();
+                webSocket.broadcastTXT(response);
+            }
         }
     }
 
