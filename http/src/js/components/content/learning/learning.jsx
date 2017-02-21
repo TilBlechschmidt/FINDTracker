@@ -1,6 +1,6 @@
 import React from "react";
 import Room from "./room.jsx";
-import {learn, learnOnce} from "../../../api/learn";
+import {learn, learnOnce, updateLocations} from "../../../api/learn";
 import {showModal, showLoader, closeModal} from "../../modal.jsx";
 import {httpAsync} from "../../../api/networking";
 
@@ -13,12 +13,14 @@ export default class Learning extends React.Component {
     }
 
     componentDidMount() {
-        if (PRODUCTION || !PRODUCTION) {
+        if (PRODUCTION) {
             const store = this.context.store;
             const config = store.getState().config;
             showLoader("Please wait while connecting to the tracking server ...");
-            httpAsync("http://" + config.trackingHost + "/locations?group=" + config.trackingGroup, closeModal, "GET", null, (a) => {
-                console.log("CANCEL CALLBACK", a);
+            httpAsync("http://" + config.trackingHost + "/locations?group=" + config.trackingGroup, () => {
+                updateLocations();;
+                closeModal();
+            }, "GET", null, (a) => {
                 store.dispatch({
                     type: 'NAVIGATE',
                     location: 'home'

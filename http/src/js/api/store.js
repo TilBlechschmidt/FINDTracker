@@ -79,7 +79,7 @@ export function reloadConfig(cb) {
         locationSocket = new WebSocket("ws://" + location.hostname + ":81");
         locationSocket.onmessage = (msg) => {
             const newLocation = JSON.parse(msg.data).location;
-            
+
             if (trackedLocationReset) clearTimeout(trackedLocationReset);
             trackedLocationReset = setTimeout(() => store.dispatch({ type: 'TRACKED', location: undefined }), 15000);
 
