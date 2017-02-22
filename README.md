@@ -10,7 +10,17 @@ by the FIND server.
 ## Usage
 
 ## Flashing
-Make sure you installed PlatformIO and npm. Then run `./flash.sh`
+Mdake sure you installed PlatformIO, git, npm and gzip and then run 
+```
+git clone https://github.com/TheMegaTB/FINDTracker.git
+
+## Linux and macOS
+./flash.sh
+
+## Windows
+platformio run --target upload
+platformio run --target uploadfs
+```
 
 ## Development
 ### PlatformIO
@@ -23,9 +33,10 @@ In order to develop the website without the need to upload the SPIFFS on every
 change you can run a local webserver (which doesn't feature config loading or writing)
 by executing the following command
 ```
-./localWebserver.sh
+cd http
+./devServer.sh
 ```
-It depends on ruby so make sure you installed that and don't forget to run `npm install` in the data folder
+
 ### OTA Serial port
 You can connect to the serial monitor of this device by executing the following
 command
@@ -37,5 +48,9 @@ telnet FINDTracker 23
 To upload the C++ code without a USB connection you can run the script provided
 by executing the following command
 ```
+## C++ code
 ./OTA.sh
+
+## Code in /http (also runs webpack)
+./OTA-SPIFFS.sh
 ```
