@@ -8,9 +8,12 @@ this is only a project that uses the ESP8266 chip as a client for the API provid
 by the FIND server.
 
 ## Usage
+Once installed you should check your WiFi networks. There should be a `FINDTracker<number>` network where `<number>` is the unique ID of your chip. Join that network, open your browser and visit [findtracker/](http://findtracker/). You should now (after a brief loading period which depends on your proximity to the chip and might vary between 3s and 60s) see the welcome screen of your very own tracker!
 
-## Flashing
-Mdake sure you installed PlatformIO, git, npm and gzip and then run 
+First thing you should change are the WiFi settings under the WiFi tab at the top to match your personal network at home. After that you should set up your tracking server, group and user (which defaults to ml.internalpositioning.com, the ID of your chip and *again* the ID). Finally you can start training some locations in the learning tab and then hit the big slider at the top right to start tracking! 
+
+## Installation
+Make sure you installed PlatformIO, git, npm and gzip and then run 
 ```
 git clone https://github.com/TheMegaTB/FINDTracker.git
 
