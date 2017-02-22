@@ -32,14 +32,43 @@ function appStore(state = defaultState, action) {
         case 'NAVIGATE':
             state.location = action.location;
             break;
+        case 'TRACKED':
+            state.trackedLocation = action.location;
     }
-
-    console.log(action.type, state);
 
     return state;
 }
 
 export let store = createStore(appStore);
+let locationSocket;
+let trackedLocationReset;
+let wsWatchdog;
+
+function connectTrackingSocket() {
+    if (locationSocket) locationSocket.close();
+    locationSocket = new WebSocket("ws://" + location.hostname + ":81");
+
+    locationSocket.onmessage = (msg) => {
+        if (msg.data == "watchdog") {
+            if (wsWatchdog) clearTimeout(wsWatchdog);
+            wsWatchdog = setTimeout(() => {
+                console.warn("Lost tracking connection!");
+                connectTrackingSocket();
+            }, 15000);
+        } else {
+            const newLocation = JSON.parse(msg.data).location;
+
+            if (trackedLocationReset) clearTimeout(trackedLocationReset);
+            trackedLocationReset = setTimeout(() => store.dispatch({ type: 'TRACKED', location: undefined }), 15000);
+
+            if (newLocation != store.getState().trackedLocation)
+                store.dispatch({
+                    type: 'TRACKED',
+                    location: newLocation.capitalizeFirstLetter()
+                });
+        }
+    }
+}
 
 export function reloadConfig(cb) {
     if (!PRODUCTION) {
@@ -61,7 +90,8 @@ export function reloadConfig(cb) {
         });
         cb();
     }
-    if (PRODUCTION)
+    if (PRODUCTION) {
+        connectTrackingSocket();
         httpAsync("/config", (cfg) => {
             cfg = JSON.parse(cfg);
             store.dispatch({
@@ -71,4 +101,5 @@ export function reloadConfig(cb) {
             });
             if (typeof cb === 'function') cb();
         });
+    }
 }

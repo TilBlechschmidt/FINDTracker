@@ -6,6 +6,8 @@
 #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
+#include <WebSocketsServer.h>
+#include <Hash.h>
 
 #include "defaults.hpp"
 #include "helpers.hpp"
@@ -21,15 +23,12 @@ class TrackingData {
     void sendSMPStateUpdate(String data);
 
 public:
-    TrackingData(Config* conf, int bufSize) : config(conf), BSSIDBuffer(bufSize), RSSIBuffer(bufSize) {
-        // this->udpSock.begin(1337);
-        // this->udpSock.beginMulticast(IPAddress(0, 0, 0, 0), IPAddress(224, 0, 0, 1), 1337);
-    }
+    TrackingData(Config* conf, int bufSize) : config(conf), BSSIDBuffer(bufSize), RSSIBuffer(bufSize) {}
 
     void initiateScan();
     bool update();
     String assemble();
-    bool send();
+    String send();
 };
 
 #endif // TRACKING_DATA_H

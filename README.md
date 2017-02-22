@@ -8,6 +8,22 @@ this is only a project that uses the ESP8266 chip as a client for the API provid
 by the FIND server.
 
 ## Usage
+Once installed you should check your WiFi networks. There should be a `FINDTracker<number>` network where `<number>` is the unique ID of your chip. Join that network, open your browser and visit [findtracker/](http://findtracker/). You should now (after a brief loading period which depends on your proximity to the chip and might vary between 3s and 60s) see the welcome screen of your very own tracker!
+
+First thing you should change are the WiFi settings under the WiFi tab at the top to match your personal network at home. After that you should set up your tracking server, group and user (which defaults to ml.internalpositioning.com, the ID of your chip and *again* the ID). Finally you can start training some locations in the learning tab and then hit the big slider at the top right to start tracking! 
+
+## Installation
+Make sure you installed PlatformIO, git, npm and gzip and then run 
+```
+git clone https://github.com/TheMegaTB/FINDTracker.git
+
+## Linux and macOS
+./flash.sh
+
+## Windows
+platformio run --target upload
+platformio run --target uploadfs
+```
 
 ## Development
 ### PlatformIO
@@ -20,9 +36,10 @@ In order to develop the website without the need to upload the SPIFFS on every
 change you can run a local webserver (which doesn't feature config loading or writing)
 by executing the following command
 ```
-./localWebserver.sh
+cd http
+./devServer.sh
 ```
-It depends on ruby so make sure you installed that and don't forget to run `npm install` in the data folder
+
 ### OTA Serial port
 You can connect to the serial monitor of this device by executing the following
 command
@@ -34,5 +51,9 @@ telnet FINDTracker 23
 To upload the C++ code without a USB connection you can run the script provided
 by executing the following command
 ```
+## C++ code
 ./OTA.sh
+
+## Code in /http (also runs webpack)
+./OTA-SPIFFS.sh
 ```

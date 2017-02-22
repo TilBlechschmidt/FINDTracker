@@ -15,6 +15,8 @@ Radio rf(conf);
 TrackingData data(conf, DEFAULT_BUFFER_SIZE);
 ConfigServer cfgSrv(conf, 80);
 
+WebSocketsServer webSocket(81);
+
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
     EEPROM.begin(4096);
@@ -25,6 +27,9 @@ void setup () {
 
     /// Open up the serial and TCP monitor
     Terminal::begin(115200);
+
+    // Print some stats
+    Terminal::printf("CPU running at %dMHz, Cycle %d, Flash chip running at %d MHz, VCC is at %d\n", ESP.getCpuFreqMHz(), ESP.getCycleCount(), ESP.getFlashChipSpeed()/1000000, ESP.getVcc());
 
     // If the pin is not pulled to ground read config or write the default one if its not
     if (digitalRead(RESET_CONF_PIN)) {
@@ -39,12 +44,17 @@ void setup () {
 
     // Setup the OTA server
     OTA();
+
+    // Setup the websocket server
+    webSocket.begin();
+    // webSocket.onEvent(webSocketEvent);
 }
 
 void runServerHandlers() {
     ArduinoOTA.handle();
     cfgSrv.handle();
     Terminal::handle();
+    webSocket.loop();
 }
 
 int sleepTimeMS;
@@ -67,18 +77,26 @@ void loop() {
         /// Update the environment data (scan for networks)
         if (data.update()) {
             // Send the data to the FIND Server
-            bool successful = data.send();
+            String response = data.send();
 
             /// Blink to indicate that we have sent our location
-            if (successful) blink();
+            if (response != "") {
+                blink();
+                webSocket.broadcastTXT(response);
+            }
         }
     }
 
     // Run all kinds of server handlers
     runServerHandlers();
 
+    // Send a watchdog signal for all websocket clients
+    if (millis() % 5000) webSocket.broadcastTXT("watchdog");
+
     // Enter a very basic sleep mode and limit the amount of cycles to preserve power
     // (Turn off the radio and wake it up periodically to answer beacon signals from router)
+    // TODO Only do this when nothing else is connected (low power mode setting maybe?)
+    //      since it breaks all kind of things like websockets, HTTP etc.
     WiFi.setSleepMode(WIFI_MODEM_SLEEP);
-    delay(1000);
+    delay(500);
 }

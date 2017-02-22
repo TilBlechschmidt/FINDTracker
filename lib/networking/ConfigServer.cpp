@@ -29,7 +29,7 @@ bool ConfigServer::handleFileRead(String path) {
     String contentType = getContentType(path);
     String pathWithGz = path + ".gz";
     if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
-    if(SPIFFS.exists(pathWithGz))
+        if(SPIFFS.exists(pathWithGz))
             path += ".gz";
         File file = SPIFFS.open(path, "r");
         size_t sent = this->httpServer.streamFile(file, contentType);
