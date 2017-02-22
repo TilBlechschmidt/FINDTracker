@@ -12,8 +12,8 @@ Config::Config() : data(dataBuffer.createObject()) {
     this->data["bufferSize"] = DEFAULT_BUFFER_SIZE;
 
     this->data["trackingHost"] = DEFAULT_TRACKING_HOST;
-    this->data["trackingGroup"] = DEFAULT_TRACKING_GROUP;
-    this->data["trackingUser"] = DEFAULT_TRACKING_USER;
+    this->data["trackingGroup"] = ESP.getChipId();
+    this->data["trackingUser"] = ESP.getChipId();
 }
 
 void Config::readFromString(String str) {

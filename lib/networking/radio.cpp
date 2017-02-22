@@ -35,7 +35,7 @@ void Radio::setup() {
 
     // Set up an AP for configuration if tracking is inactive (factory setting)
     if (!this->config->get<bool>("active"))
-        WiFi.softAP(("FIND Tracker " + String(ESP.getChipId())).c_str(), AP_PASSPHRASE);
+        WiFi.softAP(("FIND Tracker " + String(ESP.getChipId())).c_str(), this->config->get<String>("auth").c_str());
     else
         WiFi.softAPdisconnect(true);
 }
