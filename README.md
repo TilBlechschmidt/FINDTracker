@@ -13,6 +13,11 @@ Once installed you should check your WiFi networks. There should be a `FINDTrack
 First thing you should change are the WiFi settings under the WiFi tab at the top to match your personal network at home. After that you should set up your tracking server, group and user (which defaults to ml.internalpositioning.com, the ID of your chip and *again* the ID). Finally you can start training some locations in the learning tab and then hit the big slider at the top right to start tracking! 
 
 ## Installation
+
+### Flashing the binary blobs
+Okay so in case you trust me that I haven't uploaded some evil binary blobs and you actually know how to flash binary blobs onto the ESP8266 then you can download the current ones (program and SPIFFS blobs) from the release page and flash them yourself (haven't figured it out myself yet as I only use PIO, see below  for details).
+
+### Building on your own
 Make sure you installed PlatformIO, git, npm and gzip and then run 
 ```
 git clone https://github.com/TheMegaTB/FINDTracker.git
