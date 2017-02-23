@@ -17,6 +17,8 @@
 #define DEFAULT_BUFFER_SIZE     3
 #define DEFAULT_TRACKING_HOST   "ml.internalpositioning.com"
 
+#define DEBUG
+
 /// -- Things you are not supposed to change --
 #define LED_PIN 2
 #define WIFI_POOLING_INTERVAL 250
