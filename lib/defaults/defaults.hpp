@@ -3,6 +3,7 @@
 
 /// -- Things you are supposed to change --
 #define RESET_CONF_PIN          14  // D5 on nodemcuv2
+#define DISABLE_TRACKING_PIN    12  // D6 on nodemcuv2
 #define EEPROM_CONF_ADDR        0
 
 #define DEFAULT_WIFI_RECON_INT  60000

@@ -1,3 +1,5 @@
+#define DEBUG
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
@@ -36,6 +38,13 @@ void setup () {
         conf->read(EEPROM_CONF_ADDR);
     } else {
         Terminal::println("Restoring factory settings...");
+        conf->write(EEPROM_CONF_ADDR);
+    }
+
+    // If the pin is pulled to ground then disable tracking
+    if (!digitalRead(DISABLE_TRACKING_PIN)) {
+        Terminal::println("Disabling tracking...");
+        conf->readFromString("{'active': false}");
         conf->write(EEPROM_CONF_ADDR);
     }
 
