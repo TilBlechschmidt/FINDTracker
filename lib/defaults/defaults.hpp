@@ -15,7 +15,7 @@
 
 #define DEFAULT_ACTIVE          false
 #define DEFAULT_BUFFER_SIZE     3
-#define DEFAULT_TRACKING_HOST   "ml.internalpositioning.com"
+#define DEFAULT_TRACKING_HOST   "ml2.internalpositioning.com"
 
 #define DEBUG
 
