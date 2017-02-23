@@ -29,13 +29,16 @@ bool Radio::connected() {
     return WiFi.isConnected();
 }
 
+IPAddress apIP(10, 10, 10, 1);
+
 void Radio::setup() {
     /// Set the ESP up for both client and station mode (aparently required for scanning)
     WiFi.mode(WIFI_AP_STA);
 
     // Set up an AP for configuration if tracking is inactive (factory setting)
-    if (!this->config->get<bool>("active"))
+    if (!this->config->get<bool>("active")) {
+        WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
         WiFi.softAP(("FIND Tracker " + String(ESP.getChipId())).c_str(), this->config->get<String>("auth").c_str());
-    else
+    } else
         WiFi.softAPdisconnect(true);
 }

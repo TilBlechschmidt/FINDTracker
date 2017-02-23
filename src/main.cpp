@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include <Ticker.h>
 
 #include "helpers.hpp"
 #include "defaults.hpp"
@@ -9,6 +10,7 @@
 #include "TrackingData.hpp"
 #include "ConfigServer.hpp"
 
+Ticker wifiBlinker;
 
 Config* conf = new Config();
 Radio rf(conf);
@@ -54,7 +56,6 @@ void setup () {
 
     // Setup the websocket server
     webSocket.begin();
-    // webSocket.onEvent(webSocketEvent);
 }
 
 void runServerHandlers() {
@@ -64,23 +65,41 @@ void runServerHandlers() {
     webSocket.loop();
 }
 
+int lastWatchdog;
 int sleepTimeMS;
+int lastScan;
+bool connected;
+bool active;
 void loop() {
     // Check for a WiFi connection and attempt to reestablish it if it died
-    if (!rf.connected()) {
+    connected = rf.connected();
+    active = conf->get<bool>("active");
+    if (
+        (active && !connected) ||
+        (!active && !connected && lastScan - millis() > 20000)
+    ) {
         digitalWrite(LED_PIN, LOW);
         if (!rf.connect()) {
-            // Enter deep sleep in case the connection failed
-            sleepTimeMS = conf->get<int>("wifiReconnectionInterval");
-            blink(); blink(); blink();
-            Terminal::printf("Connection failed. Entering deep sleep mode for %dms ...\n", sleepTimeMS);
-            ESP.deepSleep(sleepTimeMS * 1000, WAKE_NO_RFCAL);
+            Terminal::print("Connection failed. ");
+            if (active) {
+                // Enter deep sleep in case the connection failed
+                sleepTimeMS = conf->get<int>("wifiReconnectionInterval");
+                blink(); blink(); blink();
+                Terminal::printf("Entering deep sleep mode for %dms ...\n", sleepTimeMS);
+                ESP.deepSleep(sleepTimeMS * 1000, WAKE_NO_RFCAL);
+            } else {
+                Terminal::println("");
+                wifiBlinker.attach(0.5, blinkSync);
+            }
+        } else {
+            wifiBlinker.detach();
+            digitalWrite(LED_PIN, HIGH);
         }
-        digitalWrite(LED_PIN, HIGH);
+        lastScan = millis();
     }
 
     // TODO: The data.send() step takes way too long
-    if (conf->get<bool>("active")) {
+    if (active) {
         /// Update the environment data (scan for networks)
         if (data.update()) {
             // Send the data to the FIND Server
@@ -92,18 +111,25 @@ void loop() {
                 webSocket.broadcastTXT(response);
             }
         }
+
+        // Enter a very basic sleep mode and limit the amount of cycles to preserve power
+        // (Turn off the radio and wake it up periodically to answer beacon signals from router)
+        // TODO Only do this when nothing else is connected (low power mode setting maybe?)
+        //      since it breaks all kind of things like websockets, HTTP etc.
+        WiFi.setSleepMode(WIFI_MODEM_SLEEP);
+        delay(500);
+    } else {
+        /// Let some background tasks run
+        yield();
+        delay(50);
     }
 
-    // Run all kinds of server handlers
+    /// Run all kinds of server handlers
     runServerHandlers();
 
     // Send a watchdog signal for all websocket clients
-    if (millis() % 5000) webSocket.broadcastTXT("watchdog");
-
-    // Enter a very basic sleep mode and limit the amount of cycles to preserve power
-    // (Turn off the radio and wake it up periodically to answer beacon signals from router)
-    // TODO Only do this when nothing else is connected (low power mode setting maybe?)
-    //      since it breaks all kind of things like websockets, HTTP etc.
-    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
-    delay(500);
+    if (lastWatchdog - millis() > 5000) {
+        webSocket.broadcastTXT("watchdog");
+        lastWatchdog = millis();
+    }
 }

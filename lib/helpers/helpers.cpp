@@ -14,7 +14,6 @@ void blinkSync() {
     else
         digitalWrite(LED_PIN, LOW);
     ledStatus = (ledStatus + 1) % 2; // Flip ledStatus
-
 }
 
 Ticker blinker; // Ticker object called blinker.
