@@ -3,7 +3,7 @@ import React from "react";
 const hostRegex = /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/g;
 const portRegex = /^\d{2,}$/g;
 
-const defaultHost = "ml.internalpositioning.com";
+const defaultHost = "ml2.internalpositioning.com";
 const defaultGroup = "FINDTracker";
 const defaultUser = "Human";
 
