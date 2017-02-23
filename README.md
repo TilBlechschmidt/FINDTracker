@@ -23,12 +23,16 @@ and open up [10.10.10.1/](http://10.10.10.1/) in your browser. It will undoubtly
 password which by default is set to `admin` and `supersecret` respectively.
 
 ## FAQ
+#### I left the range of my WiFi network and now it doesn't work anymore
+When you have tracking enabled and leave the range of your WiFi it enters a deep sleep mode to preserve power.
+In order to wake up from this prolonged sleep you have to wire GPIO16 and the RESET pin together. If you don't
+it'll just enter an everlasting sleep period from which only a reset could raise it.
 #### I do not see it the WiFi network
 * When tracking and connected to your network the ESP8266 disables the AP to preserve power
 * When tracking and **not** connected it goes into sleep to preserve power as well
-* Make sure the ESP8266 is blinking in a regular interval of about 1Hz. 
+* Make sure the ESP8266 is blinking in a regular interval of about 1Hz.
     * If it is the case then reflash the ESP and try again
-    * If that's not the case connect GPIO16 and GND together and reset which disables tracking.
+    * If that's not the case connect GPIO12 and GND together and reset which disables tracking.
 #### I forgot my password
 * Connect GPIO14 and GND then reset. It'll restore factory defaults
 #### What does the light mean?
@@ -40,7 +44,7 @@ There's several different types of signals:
     * **Three times** in a row after it was illuminated means it failed to connect to the network
 * Illumination
     * **Constant** means it is in the process of connecting to a WiFi network
-    
+
 ## Contributing
 ### Building
 Make sure you installed PlatformIO, git, npm and gzip and then run
