@@ -2,8 +2,6 @@
 
 bool Radio::connect() {
     String hostname = this->config->get<String>("hostname");
-    MDNS.begin(hostname.c_str());
-    WiFi.hostname(hostname);
 
     String SSID = this->config->get<String>("SSID");
     String passphrase = this->config->get<String>("passphrase");

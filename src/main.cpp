@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ArduinoJson.h>
+#include <DNSServer.h>
 #include <Ticker.h>
 
 #include "helpers.hpp"
@@ -10,6 +11,8 @@
 #include "TrackingData.hpp"
 #include "ConfigServer.hpp"
 
+#define DNS_PORT 53
+
 Ticker wifiBlinker;
 
 Config* conf = new Config();
@@ -18,6 +21,8 @@ TrackingData data(conf, DEFAULT_BUFFER_SIZE);
 ConfigServer cfgSrv(conf, 80);
 
 WebSocketsServer webSocket(81);
+DNSServer dnsServer;
+IPAddress localIP(10, 10, 10, 1);
 
 void setup () {
     // Set up the EEPROM w/ a maximum size of 4096 bytes
@@ -48,14 +53,25 @@ void setup () {
         conf->write(EEPROM_CONF_ADDR);
     }
 
+    // Set the hostname
+    WiFi.hostname("FINDTracker");
+
     // Setup the radios according to the configuration
     rf.setup();
+
+    MDNS.begin("FINDTracker");
+    MDNS.addService("http", "tcp", 80);
 
     // Setup the OTA server
     OTA();
 
     // Setup the websocket server
     webSocket.begin();
+
+    // Setup the DNS server
+    dnsServer.setTTL(300);
+    dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
+    dnsServer.start(DNS_PORT, "findtracker", localIP);
 }
 
 void runServerHandlers() {
@@ -63,20 +79,26 @@ void runServerHandlers() {
     cfgSrv.handle();
     Terminal::handle();
     webSocket.loop();
+    dnsServer.processNextRequest();
 }
 
 int lastWatchdog;
 int sleepTimeMS;
 int lastScan;
+int lastUpdate;
 bool connected;
 bool active;
 void loop() {
+    if (millis() - lastUpdate > 1500) {
+        connected = rf.connected();
+        active = conf->get<bool>("active");
+        lastUpdate = millis();
+    }
+    
     // Check for a WiFi connection and attempt to reestablish it if it died
-    connected = rf.connected();
-    active = conf->get<bool>("active");
     if (
         (active && !connected) ||
-        (!active && !connected && lastScan - millis() > 20000)
+        (!active && !connected && millis() - lastScan > 30000)
     ) {
         digitalWrite(LED_PIN, LOW);
         if (!rf.connect()) {
@@ -120,15 +142,15 @@ void loop() {
         delay(500);
     } else {
         /// Let some background tasks run
+        delay(100);
         yield();
-        delay(50);
     }
 
     /// Run all kinds of server handlers
     runServerHandlers();
 
     // Send a watchdog signal for all websocket clients
-    if (lastWatchdog - millis() > 5000) {
+    if (millis() - lastWatchdog > 5000) {
         webSocket.broadcastTXT("watchdog");
         lastWatchdog = millis();
     }

@@ -24,6 +24,8 @@ String ConfigServer::getContentType(String filename) {
 }
 
 bool ConfigServer::handleFileRead(String path) {
+    ESP8266WebServer* srv = &this->httpServer;
+
     Terminal::println("handleFileRead: " + path);
     if(path.endsWith("/")) path += INDEX_FILE_NAME;
     String contentType = getContentType(path);
@@ -31,9 +33,11 @@ bool ConfigServer::handleFileRead(String path) {
     if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
         if(SPIFFS.exists(pathWithGz))
             path += ".gz";
+
         File file = SPIFFS.open(path, "r");
         size_t sent = this->httpServer.streamFile(file, contentType);
         file.close();
+
         return true;
     }
     return false;
@@ -92,7 +96,6 @@ ConfigServer::ConfigServer(Config* conf, int port) : httpServer(port), cfg(conf)
 
     SPIFFS.begin();
     srv->begin();
-    MDNS.addService("http", "tcp", 80);
 }
 
 void ConfigServer::handleNotFound() {
