@@ -18,9 +18,11 @@ platformio run --target upload
 
 SKIP_WEBPACK=true platformio run --target uploadfs
 ```
-Now you shall look onto your WiFi network list and discover your very own `FINDTracker` network. Connect to it
-and open up [10.10.10.1/](http://10.10.10.1/) in your browser. It will undoubtly prompt you for a username and
-password which by default is set to `admin` and `supersecret` respectively.
+Now you shall look onto your WiFi network list and discover your very own `FINDTracker` network. Connect to it and execute the following:
+```
+# Replace YourSSID and YourPassphrase with the credentials of your WiFi network
+./setWiFiNetwork.sh "YourSSID" "YourPassphrase"
+```
 
 ## FAQ
 #### I left the range of my WiFi network and now it doesn't work anymore
