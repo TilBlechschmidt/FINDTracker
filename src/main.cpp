@@ -82,10 +82,10 @@ void runServerHandlers() {
     dnsServer.processNextRequest();
 }
 
-int lastWatchdog;
+int lastWatchdog = -999999;
 int sleepTimeMS;
-int lastScan;
-int lastUpdate;
+int lastScan = -999999;
+int lastUpdate = -999999;
 bool connected;
 bool active;
 void loop() {
@@ -94,7 +94,7 @@ void loop() {
         active = conf->get<bool>("active");
         lastUpdate = millis();
     }
-    
+
     // Check for a WiFi connection and attempt to reestablish it if it died
     if (
         (active && !connected) ||
