@@ -12,7 +12,7 @@ by the FIND server.
 To install this onto your beloved ESP8266 you shall **download and install [PlatformIO](http://platformio.org/)**.
 Once you did that successfully you can proceed by downloading this repository by pressing the shiny green button
 on the top right. Once downloaded you should connect your ESP8266 to your PC, open up a terminal inside the
-downloaded files and run the following commands (replace <YourBoard> according to [this](http://docs.platformio.org/en/latest/platforms/espressif8266.html#boards) e.g. esp01):
+downloaded files and run the following commands (replace \<YourBoard\> according to [this](http://docs.platformio.org/en/latest/platforms/espressif8266.html#boards) e.g. esp01):
 ```
 platformio run --target upload -e <YourBoard>
 
