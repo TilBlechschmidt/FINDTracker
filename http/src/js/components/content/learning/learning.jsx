@@ -12,13 +12,13 @@ export default class Learning extends React.Component {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         if (PRODUCTION) {
             const store = this.context.store;
             const config = store.getState().config;
             showLoader("Please wait while connecting to the tracking server ...");
             httpAsync("http://" + config.trackingHost + "/locations?group=" + config.trackingGroup, () => {
-                updateLocations();;
+                updateLocations();
                 closeModal();
             }, "GET", null, (a) => {
                 store.dispatch({

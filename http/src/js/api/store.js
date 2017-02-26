@@ -21,7 +21,8 @@ function appStore(state = defaultState, action) {
                 updateConfig(action.config);
             break;
         case 'UPDATE_LOCATIONS':
-            state.locations = action.locations;
+            if (action.locations)
+                state.locations = action.locations;
             break;
         case 'LEARN':
             state.learning = action.room;
