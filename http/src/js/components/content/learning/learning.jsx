@@ -23,7 +23,7 @@ export default class Learning extends React.Component {
             }, "GET", null, (a) => {
                 store.dispatch({
                     type: 'NAVIGATE',
-                    location: 'home'
+                    location: 'tracking'
                 });
                 closeModal();
                 showModal((
