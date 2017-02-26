@@ -21,7 +21,6 @@ TrackingData data(conf, DEFAULT_BUFFER_SIZE);
 ConfigServer cfgSrv(conf, 80);
 
 WebSocketsServer webSocket(81);
-DNSServer dnsServer;
 IPAddress localIP(10, 10, 10, 1);
 
 void setup () {
@@ -67,11 +66,6 @@ void setup () {
 
     // Setup the websocket server
     webSocket.begin();
-
-    // Setup the DNS server
-    dnsServer.setTTL(300);
-    dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
-    dnsServer.start(DNS_PORT, "findtracker", localIP);
 }
 
 void runServerHandlers() {
@@ -79,7 +73,6 @@ void runServerHandlers() {
     cfgSrv.handle();
     Terminal::handle();
     webSocket.loop();
-    dnsServer.processNextRequest();
 }
 
 int lastWatchdog = -999999;
