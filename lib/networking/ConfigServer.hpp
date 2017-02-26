@@ -11,6 +11,7 @@
 #include "Config.hpp"
 
 #define INDEX_FILE_NAME "index.html"
+#define FALLBACK_FNAME "wificonfig.html"
 
 class ConfigServer {
     ESP8266WebServer httpServer;

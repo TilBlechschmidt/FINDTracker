@@ -27,7 +27,7 @@ bool ConfigServer::handleFileRead(String path) {
     ESP8266WebServer* srv = &this->httpServer;
 
     Terminal::println("handleFileRead: " + path);
-    if(path.endsWith("/")) path += INDEX_FILE_NAME;
+    if(path.endsWith("/")) path += WiFi.isConnected() ? INDEX_FILE_NAME : FALLBACK_FNAME;
     String contentType = getContentType(path);
     String pathWithGz = path + ".gz";
     if(SPIFFS.exists(pathWithGz) || SPIFFS.exists(path)) {
